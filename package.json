@@ -14,7 +14,10 @@
   "license": "UNLICENSED",
   "homepage": "https://bitbucket.org/sparv/sparvnest#readme",
   "dependencies": {
+    "body-parser": "^1.18.1",
+    "connect-flash": "^0.1.1",
     "express": "^4.15.4",
+    "express-session": "^1.15.5",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.3.0",
