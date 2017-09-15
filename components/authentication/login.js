@@ -15,8 +15,9 @@ function login (dbTable) {
 					}
 
 					const hash = crypto.pbkdf2Sync(password, user.salt, 100000, 512, `sha512`).toString(`base64`)
-	
+
 					if (user.password === hash) {
+						console.log(`User authenticated`)
 						return done(null, user)
 					}
 

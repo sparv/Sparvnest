@@ -4,21 +4,35 @@ const createUser = require(`../database/user_registration`)
 function routing (server, dbTable) {
 	server.get(`/`, (req, res, next) => {
 		passport.authenticate(`login`, (err, user, info) => {
-			if (err) { return next(err) }
-			if (!user) { return res.sendFile(`/html/form.html`, { root: `.` }) }
+			if (err) {
+				console.log(`auth error`)
+				return next(err)
+			}
 
-			req.logIn(user, (err) => {
-				if (err) { return next(err) }
-				return res.redirect(`/suc`)
+			console.log(`penis1`)
+			console.log(user)
+
+			if (!user) { return res.send(`huen`) }
+
+			req.login(user, (err) => {
+				if (err) {
+					console.log(`login error`)
+					return next(err)
+				}
+
+				console.log(`login username: ${res.username}`)
+
+				return res.redirect(`/suc/${res.username}`)
 			})
 		})(req, res, next)
 	})
 
-	server.get(`/suc`, (req, res) => {
-		res.send(`suc`)
+	server.get(`/suc/:user`, (req, res) => {
+		res.send(`suc ${req.params.user}`)
 	})
 
 	server.get(`/nonoo`, (req, res) => {
+		console.log()
 		res.send(`nonoo`)
 	})
 
@@ -39,6 +53,8 @@ function routing (server, dbTable) {
 		successRedirect: `/suc`,
 		failureRedirect: `/nonoo`
 	}))
+
+	server.post(`/logout`, passport.authenticate())
 
 	//DEBUGGING PURPOSE ONLY
 	server.get(`/resetDB`, (req, res) => {
