@@ -1,17 +1,17 @@
 const express = require(`express`)
 const passport = require(`passport`)
+const LocalStrategy = require(`passport-local`).Strategy
 const sequelize = require(`sequelize`)
 const crypto = require(`crypto`)
 const path = require(`path`)
 const bodyParser = require(`body-parser`)
-
 //NEEDS REVIEW
 const flash = require(`connect-flash`)
 const session = require(`express-session`)
 
-const server = express()
-
 const config = require(`./config.json`)
+
+const server = express()
 
 //DATABASE CONFIGURATION
 
@@ -54,35 +54,18 @@ server.use(passport.initialize())
 server.use(bodyParser.urlencoded())
 server.use(bodyParser.json())
 
-const LocalStrategy = require(`passport-local`).Strategy
-
-//registration passport strategy
-
-
 passport.use(`login`, new LocalStrategy({
 		passReqToCallback: true,
 		usernameField: `email`
 	},
 	function (req, username, password, done) {
-		console.log(`logincheck`)
-		console.log(username)
 		User.findOne({ where: { email: username } })
 			.then((user) => {
-				console.log(`then user`)
-				console.log(user)
 				if (user == null) {
 					return done(null, false, { message: `Username or password incorrect` })
 				}
 
-				console.log(`password`)
-				console.log(password)
-				console.log(user.salt)
 				const hash = crypto.pbkdf2Sync(password, user.salt, 100000, 512, `sha512`).toString(`base64`)
-
-				console.log(`hash`)
-				console.log(hash)
-				console.log(`user password db`)
-				console.log(user.password)
 
 				if (user.password === hash) {
 					return done(null, user)
@@ -92,6 +75,17 @@ passport.use(`login`, new LocalStrategy({
 			})
 	}
 ))
+
+passport.serializeUser((user, done) => {
+	done(null, user.email)
+})
+
+passport.deserializeUser((username, done) => {
+	User.findOne({ where: { email: username } })
+		.then((user) => {
+			done(err, user)
+		})
+})
 
 //SERVER ROUTING
 
@@ -115,11 +109,9 @@ server.post(`/register`, (req, res) => {
 	let createUser = function () {
 		User.findOne({ where: { email: req.body.email } })
 			.then((user) => {
-				console.log(`user`)
-				console.log(user)
-
 				if (user) {
 					console.log(`User already registered`)
+					res.send(`user already registered`)
 				} else {
 					const salt = crypto.randomBytes(128).toString(`base64`)
 					const hash = crypto.pbkdf2Sync(req.body.password, salt, 100000, 512, `sha512`).toString(`base64`)
@@ -130,8 +122,8 @@ server.post(`/register`, (req, res) => {
 						salt: salt
 					})
 					.then((user) => {
-						console.log(user)
 						console.log(`User ${user.email} created`)
+						res.send(`${user.email} created`)
 					})
 				}
 			})
@@ -141,6 +133,7 @@ server.post(`/register`, (req, res) => {
 	}
 
 	process.nextTick(createUser)
+	res.end()
 })
 
 server.post(`/login`, passport.authenticate(`login`, {
