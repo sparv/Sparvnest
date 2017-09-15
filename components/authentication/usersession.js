@@ -8,7 +8,7 @@ function userSession (dbTable) {
 	passport.deserializeUser((username, done) => {
 		dbTable.findOne({ where: { email: username } })
 			.then((user) => {
-				done(err, user)
+				done(user.email)
 			})
 	})
 }

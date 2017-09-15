@@ -4,7 +4,7 @@ const passport = require(`passport`)
 const crypto = require(`crypto`)
 const path = require(`path`)
 const bodyParser = require(`body-parser`)
-//NEEDS REVIEW
+const cookieParser = require(`cookie-parser`)
 const flash = require(`connect-flash`)
 const session = require(`express-session`)
 
@@ -20,31 +20,22 @@ const config = require(`./config.json`)
 const server = express()
 
 //DATABASE CONFIGURATION
-
 const db = initDb(config)
 const User = tables.User(db)
 
-//PASSPORT CONFIGURATION
-server.use(passport.initialize())
-server.use(bodyParser.urlencoded())
-server.use(bodyParser.json())
-
 initLoginStrategy(User)
 initUserSessions(User)
-initRouting(server, User)
+
 //FORM TEST
-//
-//
-//
-
 server.use(express.static(path.join(__dirname, `html`)))
-const htmlDir = `./html`
 
-server.get(`/`, (req, res) => {
-	res.sendFile(`/html/form.html`, { root: __dirname })
-})
+server.use(bodyParser.urlencoded({ extended: false }))
+server.use(bodyParser.json())
+server.use(cookieParser()) //obsolet depending on express-session repo docs
+server.use(session({secret: `supersecretneedstochange`}))
+server.use(passport.initialize())
+server.use(passport.session())
 
-//
-//
+initRouting(server, User)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
