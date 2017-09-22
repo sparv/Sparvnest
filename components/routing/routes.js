@@ -3,39 +3,28 @@ const createUser = require(`../database/user_registration`)
 
 function routing (server, dbTable) {
 	server.get(`/`, (req, res, next) => {
-		passport.authenticate(`login`, (err, user, info) => {
-			if (err) {
-				console.log(`auth error`)
-				return next(err)
-			}
+		console.log(`is user authenticated: ${req.isAuthenticated()}`)
 
-			console.log(user)
-
-			if (!user) { return res.redirect(`/register`) }
-
-			req.login(user, (err) => {
-				if (err) {
-					console.log(`login error`)
-					return next(err)
-				}
-
-				console.log(`login username: ${res.username}`)
-
-				return res.redirect(`/suc/${res.username}`)
-			})
-		})(req, res, next)
+		if (req.isAuthenticated()) {
+			console.log(`passport session user ${req.session.passport.user}`)
+			res.redirect(`/suc/${req.session.passport.user}`)
+		} else {
+			res.redirect(`/register`)
+		}
 	})
+
+	server.get(`/suc`, (req, res) => res.redirect(`/register`))
 
 	server.get(`/suc/:user`, (req, res) => {
-		res.send(`suc ${req.params.user}`)
-	})
-
-	server.get(`/suc`, (req, res) => {
-		res.send(`SUCUSUCUSC`)
+		if (req.isAuthenticated()) {
+			res.send(`suc ${req.params.user}`)
+			res.end()
+		} else {
+			res.redirect(`/register`)
+		}
 	})
 
 	server.get(`/nonoo`, (req, res) => {
-		console.log()
 		res.send(`nonoo`)
 	})
 

@@ -7,6 +7,7 @@ const bodyParser = require(`body-parser`)
 const cookieParser = require(`cookie-parser`)
 const flash = require(`connect-flash`)
 const session = require(`express-session`)
+const MemoryStore = require(`memorystore`)(session)
 
 //SPARVNEST COMPONENTS
 const initDb = require(`${__dirname}/components/database/init`)
@@ -32,7 +33,12 @@ server.use(express.static(path.join(__dirname, `html`)))
 server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(cookieParser()) //obsolet depending on express-session repo docs
-server.use(session({secret: `supersecretneedstochange`}))
+server.use(session({
+	store: new MemoryStore({
+		checkPeriod: 86400000
+	}),
+	secret: `supersecretneedstochange`
+}))
 server.use(passport.initialize())
 server.use(passport.session())
 
