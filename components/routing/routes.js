@@ -9,10 +9,9 @@ function routing (server, dbTable) {
 				return next(err)
 			}
 
-			console.log(`penis1`)
 			console.log(user)
 
-			if (!user) { return res.send(`huen`) }
+			if (!user) { return res.redirect(`/register`) }
 
 			req.login(user, (err) => {
 				if (err) {
@@ -31,9 +30,18 @@ function routing (server, dbTable) {
 		res.send(`suc ${req.params.user}`)
 	})
 
+	server.get(`/suc`, (req, res) => {
+		res.send(`SUCUSUCUSC`)
+	})
+
 	server.get(`/nonoo`, (req, res) => {
 		console.log()
 		res.send(`nonoo`)
+	})
+
+	server.get(`/register`, (req, res) => {
+		res.send(`<html><body><h2>LOGIN</h2><form action="http://localhost:4040/login" method="post"><div><label>Mail:</label><input type="text" name="email"/></div><div><label>Password:</label><input type="password" name="password"/></div><div><input type="submit" value="Log In"/></div></form><hr /><h2>REG</h2><form action="http://localhost:4040/register" method="post"><div><label>Mail:</label><input type="text" name="email"/></div><div><label>Password:</label><input type="password" name="password"/></div><div><input type="submit" value="Register"/></div></form></body></html>`)
+		res.end()
 	})
 
 	server.post(`/register`, (req, res) => {
@@ -49,10 +57,17 @@ function routing (server, dbTable) {
 		})
 	})
 
-	server.post(`/login`, passport.authenticate(`login`, {
-		successRedirect: `/suc`,
-		failureRedirect: `/nonoo`
-	}))
+	server.post(`/login`, (req, res, next) => {
+		passport.authenticate(`login`, (err, user, info) => {
+			if (err) { return next(err) }
+			if (!user) { return res.redirect(`/nonoo`) }
+
+			req.login(user, (err) => {
+				if (err) { return next(err) }
+				return res.redirect(`/suc/${user.email}`)
+			})
+		})(req, res, next)
+	})
 
 	server.post(`/logout`, passport.authenticate())
 

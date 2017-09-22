@@ -11,7 +11,7 @@ function login (dbTable) {
 			dbTable.findOne({ where: { email: username } })
 				.then((user) => {
 					if (user == null) {
-						return done(null, false, { message: `Username or password incorrect` })
+						return done(null, false)
 					}
 
 					const hash = crypto.pbkdf2Sync(password, user.salt, 100000, 512, `sha512`).toString(`base64`)
@@ -21,7 +21,7 @@ function login (dbTable) {
 						return done(null, user)
 					}
 
-					return done(null, false, { message: `login error` })
+					return done(null, false)
 				})
 		}
 	))
