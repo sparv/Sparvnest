@@ -3,29 +3,24 @@ const createUser = require(`../database/user_registration`)
 
 function routing (server, dbTable) {
 	server.get(`/`, (req, res, next) => {
-		console.log(`is user authenticated: ${req.isAuthenticated()}`)
-
 		if (req.isAuthenticated()) {
-			console.log(`passport session user ${req.session.passport.user}`)
-			res.redirect(`/suc/${req.session.passport.user}`)
+			res.redirect(`/profile`)
 		} else {
 			res.redirect(`/register`)
 		}
 	})
 
-	server.get(`/suc`, (req, res) => res.redirect(`/register`))
-
-	server.get(`/suc/:user`, (req, res) => {
+	server.get(`/profile`, (req, res) => {
 		if (req.isAuthenticated()) {
-			res.send(`suc ${req.params.user}`)
+			res.send(`<p>Logged in user: ${req.session.passport.user}</p><form action="http://localhost:4040/logout" method="post"><input type="submit" value="logoff" /></form>`)
 			res.end()
 		} else {
 			res.redirect(`/register`)
 		}
 	})
 
-	server.get(`/nonoo`, (req, res) => {
-		res.send(`nonoo`)
+	server.get(`/error`, (req, res) => {
+		res.send(`error`)
 	})
 
 	server.get(`/register`, (req, res) => {
@@ -35,7 +30,6 @@ function routing (server, dbTable) {
 
 	server.post(`/register`, (req, res) => {
 		createUser(dbTable, req.body, (success, email) => {
-			console.log(`createUser Callback`)
 			if (success) {
 				res.send(`${email} created`)
 			} else {
@@ -49,16 +43,28 @@ function routing (server, dbTable) {
 	server.post(`/login`, (req, res, next) => {
 		passport.authenticate(`login`, (err, user, info) => {
 			if (err) { return next(err) }
-			if (!user) { return res.redirect(`/nonoo`) }
+			if (!user) { return res.redirect(`/error`) }
 
 			req.login(user, (err) => {
 				if (err) { return next(err) }
-				return res.redirect(`/suc/${user.email}`)
+				return res.redirect(`/profile`)
 			})
 		})(req, res, next)
 	})
 
-	server.post(`/logout`, passport.authenticate())
+	server.get(`/logout`, (req, res, next) => {
+		res.send(`logged out`)
+		res.end()
+	})
+
+	server.post(`/logout`, (req, res, next) => {
+		if (req.isAuthenticated()) {
+			req.logout()
+			res.redirect(`/logout`)
+		} else {
+			res.redirect(`/register`)
+		}
+	})
 
 	//DEBUGGING PURPOSE ONLY
 	server.get(`/resetDB`, (req, res) => {

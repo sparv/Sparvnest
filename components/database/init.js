@@ -4,6 +4,7 @@ function initializeDatabase (config) {
 	const db = new sequelize(config.db.database, config.db.user, config.db.pass, {
 		host: config.db.host,
 		dialect: `postgres`,
+		logging: false,
 		pool: {
 			max: 5,
 			min: 0,
