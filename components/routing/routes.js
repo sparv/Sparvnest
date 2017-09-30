@@ -51,7 +51,10 @@ function routing (server, dbTable) {
 
 			req.login(user, (err) => {
 				if (err) { return next(err) }
-				return res.send({ auth: true })
+				return res.send({
+					auth: true,
+					session: req.session.id
+				})
 			})
 		})(req, res, next)
 	})
