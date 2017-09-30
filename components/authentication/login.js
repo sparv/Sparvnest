@@ -8,7 +8,7 @@ function login (dbTable) {
 			usernameField: `email`
 		},
 		function (req, username, password, done) {
-			dbTable.findOne({ where: { email: username } })
+			dbTable.findOne({ where: { email: decodeURIComponent(username) } })
 				.then((user) => {
 					if (user == null) {
 						return done(null, false)

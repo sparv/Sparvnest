@@ -41,13 +41,17 @@ function routing (server, dbTable) {
 	})
 
 	server.post(`/login`, (req, res, next) => {
+		console.log(`login request`)
 		passport.authenticate(`login`, (err, user, info) => {
 			if (err) { return next(err) }
-			if (!user) { return res.redirect(`/error`) }
+			if (!user) {
+				console.log(`User not authenticated`)
+				return res.send({ auth: false })
+			}
 
 			req.login(user, (err) => {
 				if (err) { return next(err) }
-				return res.redirect(`/profile`)
+				return res.send({ auth: true })
 			})
 		})(req, res, next)
 	})
