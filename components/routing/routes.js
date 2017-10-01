@@ -40,6 +40,10 @@ function routing (server, dbTable) {
 		})
 	})
 
+	server.get(`/auth`, (req, res, next ) => {
+		console.log(req.isAuthenticated())
+	})
+
 	server.post(`/login`, (req, res, next) => {
 		console.log(`login request`)
 		passport.authenticate(`login`, (err, user, info) => {
@@ -53,7 +57,8 @@ function routing (server, dbTable) {
 				if (err) { return next(err) }
 				return res.send({
 					auth: true,
-					session: req.session.id
+					session: req.session.id,
+					user: user.email
 				})
 			})
 		})(req, res, next)
