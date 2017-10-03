@@ -1,7 +1,8 @@
 const passport = require(`passport`)
 const createUser = require(`../database/user_registration`)
+const jwt = require(`jsonwebtoken`)
 
-function routing (server, dbTable) {
+function routing (server, dbTable, config) {
 	server.get(`/`, (req, res, next) => {
 		if (req.isAuthenticated()) {
 			res.redirect(`/profile`)
@@ -40,8 +41,26 @@ function routing (server, dbTable) {
 		})
 	})
 
-	server.get(`/auth`, (req, res, next ) => {
-		console.log(req.isAuthenticated())
+	server.post(`/auth`, (req, res) => {
+		console.log(req.headers.authorization)
+		const token = req.headers.authorization.replace(`Bearer `, ``)
+		const verification = jwt.verify(token, config.auth.secret)
+		console.log(`Verification: ${verification}`)
+		console.log(verification)
+		dbTable.findOne({ where: { email: verification.name } })
+			.then((user) => {
+				res.send({
+					username: user.email,
+					createdAt: user.createdAt
+				})
+			})
+			.catch((err) => {
+				res.send({
+					username: false,
+					createdAt: false
+				})
+			})
+
 	})
 
 	server.post(`/login`, (req, res, next) => {
@@ -55,10 +74,18 @@ function routing (server, dbTable) {
 
 			req.login(user, (err) => {
 				if (err) { return next(err) }
+
+				const jwtPayload = {
+					"sub": "user_authentication",
+					"name": user.email
+				}
+
+				const token = jwt.sign(jwtPayload, config.auth.secret)
+
 				return res.send({
 					auth: true,
-					session: req.session.id,
-					user: user.email
+					user: user.email,
+					token: token
 				})
 			})
 		})(req, res, next)

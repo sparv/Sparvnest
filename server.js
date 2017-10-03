@@ -42,6 +42,6 @@ server.use(session({
 server.use(passport.initialize())
 server.use(passport.session())
 
-initRouting(server, User)
+initRouting(server, User, config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
