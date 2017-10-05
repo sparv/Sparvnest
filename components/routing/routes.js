@@ -3,30 +3,10 @@ const createUser = require(`../database/user_registration`)
 const jwt = require(`jsonwebtoken`)
 
 function routing (server, dbTable, config) {
-	server.get(`/`, (req, res, next) => {
-		if (req.isAuthenticated()) {
-			res.redirect(`/profile`)
-		} else {
-			res.redirect(`/register`)
-		}
-	})
-
-	server.get(`/profile`, (req, res) => {
-		if (req.isAuthenticated()) {
-			res.send(`<p>Logged in user: ${req.session.passport.user}</p><form action="http://localhost:4040/logout" method="post"><input type="submit" value="logoff" /></form>`)
-			res.end()
-		} else {
-			res.redirect(`/register`)
-		}
-	})
-
-	server.get(`/error`, (req, res) => {
-		res.send(`error`)
-	})
-
-	server.get(`/register`, (req, res) => {
-		res.send(`<html><body><h2>LOGIN</h2><form action="http://localhost:4040/login" method="post"><div><label>Mail:</label><input type="text" name="email"/></div><div><label>Password:</label><input type="password" name="password"/></div><div><input type="submit" value="Log In"/></div></form><hr /><h2>REG</h2><form action="http://localhost:4040/register" method="post"><div><label>Mail:</label><input type="text" name="email"/></div><div><label>Password:</label><input type="password" name="password"/></div><div><input type="submit" value="Register"/></div></form></body></html>`)
-		res.end()
+	server.use((req, res, next) => {
+		res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
+		res.append(`Access-Control-Allow-Headers`, [`Authorization`])
+		next()
 	})
 
 	server.post(`/register`, (req, res) => {
@@ -41,26 +21,36 @@ function routing (server, dbTable, config) {
 		})
 	})
 
-	server.post(`/auth`, (req, res) => {
-		console.log(req.headers.authorization)
+	server.post(`/checkauth`, (req, res) => {
 		const token = req.headers.authorization.replace(`Bearer `, ``)
-		const verification = jwt.verify(token, config.auth.secret)
-		console.log(`Verification: ${verification}`)
-		console.log(verification)
-		dbTable.findOne({ where: { email: verification.name } })
-			.then((user) => {
-				res.send({
-					username: user.email,
-					createdAt: user.createdAt
-				})
-			})
-			.catch((err) => {
-				res.send({
-					username: false,
-					createdAt: false
-				})
-			})
 
+		if ((token !== `undefined`) && (token !== ``)) {
+			console.log(`:::${token}:::`)
+			const verification = jwt.verify(token, config.auth.secret)
+
+			dbTable.findOne({ where: { email: verification.name } })
+				.then((user) => {
+					res.send({
+						username: user.email,
+						createdAt: user.createdAt,
+						isAuthenticated: true
+					})
+				})
+				.catch((err) => {
+					res.send({
+						username: false,
+						createdAt: false,
+						isAuthenticated: false
+					})
+				})
+		} else {
+			res.send({
+				username: false,
+				createdAt: false,
+				isAuthenticated: false
+			})
+		}
+		
 	})
 
 	server.post(`/login`, (req, res, next) => {
