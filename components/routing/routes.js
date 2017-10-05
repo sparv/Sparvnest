@@ -70,11 +70,7 @@ function routing (server, dbTable, config) {
 			if (!user) {
 				console.log(`User not authenticated`)
 				return res.send({ auth: false })
-			}
-
-			req.login(user, (err) => {
-				if (err) { return next(err) }
-
+			} else {
 				const jwtPayload = {
 					"sub": "user_authentication",
 					"name": user.email
@@ -87,7 +83,7 @@ function routing (server, dbTable, config) {
 					user: user.email,
 					token: token
 				})
-			})
+			}
 		})(req, res, next)
 	})
 
