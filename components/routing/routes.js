@@ -5,52 +5,70 @@ const jwt = require(`jsonwebtoken`)
 function routing (server, dbTable, config) {
 	server.use((req, res, next) => {
 		res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
-		res.append(`Access-Control-Allow-Headers`, [`Authorization`])
+		res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
 		next()
 	})
 
 	server.post(`/register`, (req, res) => {
+		console.log(`req data`)
+		console.log(req.body)
 		createUser(dbTable, req.body, (success, email) => {
 			if (success) {
-				res.send(`${email} created`)
+				res.send({
+					username: email,
+					isRegistered: true
+				})
 			} else {
-				res.send(`user already registered`)
+				res.send({
+					username: null,
+					isRegistered: false
+				})
 			}
 
 			res.end()
 		})
 	})
 
-	server.post(`/checkauth`, (req, res) => {
+	server.post(`/validate`, (req, res) => {
 		const token = req.headers.authorization.replace(`Bearer `, ``)
 
 		if ((token !== `undefined`) && (token !== ``)) {
 			console.log(`:::${token}:::`)
-			const verification = jwt.verify(token, config.auth.secret)
-
-			dbTable.findOne({ where: { email: verification.name } })
-				.then((user) => {
+			jwt.verify(token, config.auth.secret, (err, verification) => {
+				if (err) {
 					res.send({
-						username: user.email,
-						createdAt: user.createdAt,
-						isAuthenticated: true
-					})
-				})
-				.catch((err) => {
-					res.send({
-						username: false,
-						createdAt: false,
+						username: null,
+						createdAt: null,
 						isAuthenticated: false
 					})
-				})
+				}
+
+				dbTable.findOne({ where: { email: verification.name } })
+					.then((user) => {
+						res.send({
+							username: user.email,
+							createdAt: user.createdAt,
+							isAuthenticated: true
+						})
+						res.end()
+					})
+					.catch((err) => {
+						res.send({
+							username: null,
+							createdAt: null,
+							isAuthenticated: false
+						})
+						res.end()
+					})
+			})
 		} else {
 			res.send({
-				username: false,
-				createdAt: false,
+				username: null,
+				createdAt: null,
 				isAuthenticated: false
 			})
+			res.end()
 		}
-		
 	})
 
 	server.post(`/login`, (req, res, next) => {
@@ -59,7 +77,11 @@ function routing (server, dbTable, config) {
 			if (err) { return next(err) }
 			if (!user) {
 				console.log(`User not authenticated`)
-				return res.send({ auth: false })
+				return res.send({
+					auth: false,
+					user: null,
+					token: null
+				})
 			} else {
 				const jwtPayload = {
 					"sub": "user_authentication",
@@ -75,11 +97,6 @@ function routing (server, dbTable, config) {
 				})
 			}
 		})(req, res, next)
-	})
-
-	server.get(`/logout`, (req, res, next) => {
-		res.send(`logged out`)
-		res.end()
 	})
 
 	server.post(`/logout`, (req, res, next) => {
