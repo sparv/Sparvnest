@@ -30,7 +30,8 @@ function routing (server, dbTable, config) {
 	})
 
 	server.post(`/validate`, (req, res) => {
-		const token = req.headers.authorization.replace(`Bearer `, ``)
+		//REALLY ugly work, needs refactor
+		const token = req.headers.authorization.split(`;`)[0].replace(`Bearer `, ``)
 
 		if ((token !== `undefined`) && (token !== ``)) {
 			console.log(`:::${token}:::`)
@@ -42,6 +43,8 @@ function routing (server, dbTable, config) {
 						isAuthenticated: false
 					})
 				}
+
+				console.log(`verification: ${verification}`)
 
 				dbTable.findOne({ where: { email: verification.name } })
 					.then((user) => {
