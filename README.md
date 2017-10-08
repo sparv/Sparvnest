@@ -15,6 +15,10 @@ Before starting the first time, install all dependencies with:
 
 `npm i`
 
+Also, copy the config example and change it to your setup:
+
+`cp config.json.example config.json`
+
 To run the development server execute:
 
 `npm run dev`
