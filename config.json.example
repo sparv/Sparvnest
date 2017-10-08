@@ -1,0 +1,13 @@
+{
+	"port": 4040, //dont change that yet
+	"db": {
+		"url": "DB_URL",
+		"port": DB_PORT,
+		"user": "postgres",
+		"pass": "",
+		"database": "DATABASE_NAME"
+	},
+	"auth": {
+		"secret": "supersecretstringneedstobechanged!!!" //just in config for development, will be changed later
+	}
+}
