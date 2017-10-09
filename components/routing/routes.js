@@ -28,9 +28,7 @@ function routing (server, dbTable, config) {
 	})
 
 	server.post(`/validate`, (req, res) => {
-		//REALLY ugly work, needs refactor
-		console.log(req.headers.authorization)
-		const token = req.headers.authorization.split(`;`)[0].replace(`Bearer `, ``)
+		const token = req.headers.authorization.replace(`Bearer `, ``)
 
 		if ((token !== `undefined`) && (token !== ``)) {
 			jwt.verify(token, config.auth.secret, (err, verification) => {
