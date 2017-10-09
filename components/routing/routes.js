@@ -30,25 +30,43 @@ function routing (server, dbTable, config) {
 
 	server.post(`/update`, (req, res) => {
 		updateUser(dbTable, req.body, (success, user) => {
-			res.send({
-				username: user.email,
-				isUpdated: success
+			dbTable.findOne({ where: { email: user } })
+			.then((userdata) => {
+				console.log(userdata)
+				const token = jwt.sign({
+						"sub": "user_autentication",
+						"name": userdata.email
+					},
+					config.auth.secret)
+
+				res.send({
+					username: userdata.email,
+					token: token,
+					isUpdated: success
+				})
 			})
 		})
 	})
 
 	server.post(`/validate`, (req, res) => {
 		const token = req.headers.authorization.replace(`Bearer `, ``)
+		console.log(`received token: ${token}`)
 
 		if ((token !== `undefined`) && (token !== ``)) {
+			console.log(`token available`)
 			jwt.verify(token, config.auth.secret, (err, verification) => {
 				if (err) {
+					console.log(`err`)
+					console.log(err)
 					res.send({
 						username: null,
 						createdAt: null,
 						isAuthenticated: false
 					})
 				}
+
+				console.log(`verification`)
+				console.log(verification)
 
 				dbTable.findOne({ where: { email: verification.name } })
 					.then((user) => {
