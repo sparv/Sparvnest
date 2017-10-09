@@ -10,8 +10,6 @@ function routing (server, dbTable, config) {
 	})
 
 	server.post(`/register`, (req, res) => {
-		console.log(`req data`)
-		console.log(req.body)
 		createUser(dbTable, req.body, (success, email) => {
 			if (success) {
 				res.send({
@@ -31,10 +29,10 @@ function routing (server, dbTable, config) {
 
 	server.post(`/validate`, (req, res) => {
 		//REALLY ugly work, needs refactor
+		console.log(req.headers.authorization)
 		const token = req.headers.authorization.split(`;`)[0].replace(`Bearer `, ``)
 
 		if ((token !== `undefined`) && (token !== ``)) {
-			console.log(`:::${token}:::`)
 			jwt.verify(token, config.auth.secret, (err, verification) => {
 				if (err) {
 					res.send({
@@ -43,8 +41,6 @@ function routing (server, dbTable, config) {
 						isAuthenticated: false
 					})
 				}
-
-				console.log(`verification: ${verification}`)
 
 				dbTable.findOne({ where: { email: verification.name } })
 					.then((user) => {
@@ -75,7 +71,6 @@ function routing (server, dbTable, config) {
 	})
 
 	server.post(`/login`, (req, res, next) => {
-		console.log(`login request`)
 		passport.authenticate(`login`, (err, user, info) => {
 			if (err) { return next(err) }
 			if (!user) {
