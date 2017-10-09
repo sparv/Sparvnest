@@ -1,5 +1,6 @@
 const passport = require(`passport`)
 const createUser = require(`../database/user_registration`)
+const updateUser = require(`../database/user_update`)
 const jwt = require(`jsonwebtoken`)
 
 function routing (server, dbTable, config) {
@@ -24,6 +25,15 @@ function routing (server, dbTable, config) {
 			}
 
 			res.end()
+		})
+	})
+
+	server.post(`/update`, (req, res) => {
+		updateUser(dbTable, req.body, (success, user) => {
+			res.send({
+				username: user.email,
+				isUpdated: success
+			})
 		})
 	})
 

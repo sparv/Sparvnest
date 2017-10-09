@@ -1,4 +1,5 @@
-const crypto = require(`crypto`)
+const hashPassword = require(`./hash_password`)
+const createSalt = require(`./create_salt`)
 
 function userRegistration (dbTable, data, callback) {
 	dbTable.findOne({ where: { email: data.email } })
@@ -7,15 +8,13 @@ function userRegistration (dbTable, data, callback) {
 				console.log(`User already registered`)
 				callback(false)
 			} else {
-				const salt = crypto.randomBytes(128).toString(`base64`)
-				const hash = crypto.pbkdf2Sync(data.password, salt, 100000, 512, `sha512`).toString(`base64`)
+				const salt = createSalt()
 
 				dbTable.create({
 					email: data.email,
-					password: hash,
+					password: hashPassword(data.password, salt),
 					salt: salt
-				})
-				.then((user) => {
+				}).then((user) => {
 					console.log(`User ${user.email} created`)
 					callback(true, user.email)
 				})
