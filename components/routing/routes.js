@@ -40,7 +40,8 @@ function routing (server, dbTable, config) {
 					config.auth.secret)
 
 				res.send({
-					username: userdata.email,
+					email: userdata.email,
+					name: userdata.name,
 					token: token,
 					isUpdated: success
 				})
