@@ -10,10 +10,13 @@ function userRegistration (dbTable, data, callback) {
 			} else {
 				const salt = createSalt()
 
+				console.log(`PASSWORD: ${data.password}`)
+
 				dbTable.create({
 					email: data.email,
 					password: hashPassword(data.password, salt),
-					salt: salt
+					salt: salt,
+					name: data.name
 				}).then((user) => {
 					console.log(`User ${user.email} created`)
 					callback(true, user.email)

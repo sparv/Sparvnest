@@ -14,6 +14,9 @@ const tables = {
 			},
 			salt: {
 				type: sequelize.STRING
+			},
+			name: {
+				type: sequelize.STRING
 			}
 		})
 

@@ -1,5 +1,5 @@
 const passport = require(`passport`)
-const createUser = require(`../database/user_registration`)
+const userRegistration = require(`../database/user_registration`)
 const updateUser = require(`../database/user_update`)
 const jwt = require(`jsonwebtoken`)
 
@@ -11,7 +11,7 @@ function routing (server, dbTable, config) {
 	})
 
 	server.post(`/register`, (req, res) => {
-		createUser(dbTable, req.body, (success, email) => {
+		userRegistration(dbTable, req.body, (success, email) => {
 			if (success) {
 				res.send({
 					username: email,
@@ -117,7 +117,8 @@ function routing (server, dbTable, config) {
 				return res.send({
 					auth: true,
 					user: user.email,
-					token: token
+					token: token,
+					name: user.name
 				})
 			}
 		})(req, res, next)
