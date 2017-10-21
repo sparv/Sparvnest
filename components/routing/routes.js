@@ -3,6 +3,8 @@ const userRegistration = require(`../database/user_registration`)
 const updateUser = require(`../database/user_update`)
 const jwt = require(`jsonwebtoken`)
 
+const hashPassword = require(`../database/hash_password`)
+
 function routing (server, dbTable, config) {
 	server.use((req, res, next) => {
 		res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
@@ -47,6 +49,59 @@ function routing (server, dbTable, config) {
 				})
 			})
 		})
+	})
+
+	server.post(`/delete`, (req, res) => {
+		const token = req.headers.authorization.replace(`Bearer `, ``)
+		if ((token !== `undefined`) && (token !== ``)) {
+			jwt.verify(token, config.auth.secret, (err, verification) => {
+				if (err) {
+					console.log(err)
+					res.send({
+						username: null,
+						createdAt: null,
+						isAuthenticated: false
+					})
+				}
+
+				dbTable.findOne({ where: { email: verification.name } })
+					.then((user) => {
+						const hashedPassword = hashPassword(req.body.password, user.salt)
+						let isCorrectPassword = false
+						;(user.password === hashedPassword) ? isCorrectPassword = true : null
+
+						dbTable.destroy({ where: { email: verification.name } })
+							.then(() => {
+								res.send({
+									username: user.email,
+									isDeleted: true
+								})
+
+								res.end()
+							})
+							.catch((err) => {
+								console.log(err)
+								res.send({
+									username: user.email,
+									isDeleted: false,
+									error: err
+								})
+
+								res.end()
+							})
+					})
+					.catch((err) => {
+						console.log(err)
+						res.send({
+							username: null,
+							createdAt: null,
+							isAuthenticated: false
+						})
+						res.end()
+					})
+			})
+		} else {
+		}
 	})
 
 	server.post(`/validate`, (req, res) => {
