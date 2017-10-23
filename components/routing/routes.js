@@ -13,25 +13,18 @@ function routing (server, dbTable, config) {
   })
 
   server.post(`/register`, (req, res) => {
-    userRegistration(dbTable, req.body, (success, email) => {
-      if (success) {
-        res.send({
-          username: email,
-          isRegistered: true
-        })
-      } else {
-        res.send({
-          username: null,
-          isRegistered: false
-        })
-      }
-
+    userRegistration(dbTable, req.body, (err, success, email) => {
+      if (err) console.log(err)
+      res.send({
+        username: email,
+        isRegistered: success
+      })
       res.end()
     })
   })
 
   server.post(`/update`, (req, res) => {
-    updateUser(dbTable, req.body, (success, user) => {
+    updateUser(dbTable, req.body, (user) => {
       dbTable.findOne({ where: { email: user } })
       .then((userdata) => {
         console.log(userdata)
@@ -45,7 +38,7 @@ function routing (server, dbTable, config) {
           email: userdata.email,
           name: userdata.name,
           token: token,
-          isUpdated: success
+          isUpdated: true
         })
       })
     })
@@ -140,6 +133,8 @@ function routing (server, dbTable, config) {
        res.end()
      })
      .catch((err) => {
+       if (err) console.log(err)
+
        res.send({
          username: null,
          createdAt: null,

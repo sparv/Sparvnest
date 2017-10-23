@@ -6,7 +6,7 @@ function userRegistration (dbTable, data, callback) {
   .then((user) => {
     if (user) {
       console.log(`User already registered`)
-      callback(false)
+      callback(null, false, null)
     } else {
       const salt = createSalt()
 
@@ -19,7 +19,7 @@ function userRegistration (dbTable, data, callback) {
         name: data.name
       }).then((user) => {
         console.log(`User ${user.email} created`)
-        callback(true, user.email)
+        callback(null, true, user.email)
       })
     }
   })

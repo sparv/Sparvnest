@@ -6,13 +6,13 @@ function userUpdate (dbTable, data, callback) {
     console.log(`user salt: ${user.salt}`)
 
     let updateData = {}
-  ;(data.update.email !== null) ? updateData[`email`] = data.update.email : null
-  ;(data.update.password !== null) ? updateData[`password`] = hashPassword(data.update.password, user.salt) : null
+    if (data.update.email !== null) updateData[`email`] = data.update.email
+    if (data.update.password !== null) updateData[`password`] = hashPassword(data.update.password, user.salt)
 
     dbTable.update(updateData, {
       where: { email: user.email }
     }).then(() => {
-      callback(true, data.update.email)
+      callback(data.update.email)
     })
   })
 }
