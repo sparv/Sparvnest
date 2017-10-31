@@ -609,7 +609,7 @@
                           },
                           "email": {
                             "type": "string",
-                            "type": "email"
+                            "format": "email"
                           }
                         }
                       }
@@ -1141,4 +1141,5 @@
       }
     }
   }
+}
 }
