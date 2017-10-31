@@ -112,7 +112,7 @@
         }
       }
     },
-    "/register": {
+    "/users/{userId}": {
       "post": {
         "description": "Registering an user (coach) to the system",
         "requestBody": {
@@ -188,100 +188,8 @@
             }
           }
         }
-      }
-    },
-    "/user/{userId}": {
-      "get": {
-        "description": "Getting profile information from currently logged in user (coach)",
-        "security": {
-          "jwt_key": []
-        },
-        "requestBody": {
-          "description": "Sending authentication information to get profile information linked to userId",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "user_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User is authenticated and user profile information were gathered from database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "fullname": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request cannot be computed - client sent invalid data to server endpoint",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User authentication failed. Invalid authorization credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Something went wrong on the server side - Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/{userId}/update": {
-      "post": {
+      },
+      "patch": {
         "description": "Updating profile information of current logged in user",
         "security": {
           "jwt_key": []
@@ -378,10 +286,96 @@
           }
 
         }
-      }
-    },
-    "/user/{userId}/delete": {
-      "post": {
+      },
+      "get": {
+        "description": "Getting profile information from currently logged in user (coach)",
+        "security": {
+          "jwt_key": []
+        },
+        "requestBody": {
+          "description": "Sending authentication information to get profile information linked to userId",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User is authenticated and user profile information were gathered from database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fullname": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request cannot be computed - client sent invalid data to server endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication failed. Invalid authorization credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong on the server side - Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
         "description": "deleting currently logged in user",
         "security": {
           "jwt_key": []
@@ -469,93 +463,7 @@
         }
       }
     },
-    "/user/{userId}/validate": {
-      "post": {
-        "description": "validating the current client user and auth token with the server backend to ensure it is a valid user. Needed for preventing access to private sections in the application through clientside manipulation",
-        "security": {
-          "jwt_key": []
-        },
-        "requestBody": {
-          "description": "sending user token and user id saved on the client side",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "user_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Current user on client side is valid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request cannot be computed - client sent invalid data to server endpoint",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User authentication failed. Invalid authorization credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Something went wrong on the server side - Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/{userId}/customer/all/view": {
+    "/customers": {
       "get": {
         "description": "Getting overview information for all customer data of authenticated user",
         "security": {
@@ -668,7 +576,7 @@
         }
       }
     },
-    "/user/{userId}/customer/all/add": {
+    "/customers/{customerId}": {
       "post": {
         "description": "Adding new customer to user customer list",
         "security": {
@@ -773,9 +681,7 @@
             }
           }
         }
-      }
-    },
-    "/user/{userId}/customer/{customerId}/view": {
+      },
       "get": {
         "description": "Getting detailed information of specific customer via customerId",
         "security": {
@@ -935,10 +841,8 @@
             }
           }
         }
-      }
-    },
-    "/user/{userId}/customer/{customerId}/edit": {
-      "post": {
+      },
+      "patch": {
         "description": "Editing customer information",
         "security": {
           "jwt_key": []
@@ -1046,10 +950,8 @@
             }
           }
         }
-      }
-    },
-    "/user/{userId}/customer/{customerId}/delete": {
-      "post": {
+      },
+      "delete": {
         "description": "Deleting customer from database",
         "security": {
           "jwt_key": []
