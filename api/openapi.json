@@ -48,7 +48,10 @@
                       "type": "string",
                       "format": "uuid"
                     },
-                    "fullname": {
+                    "forename": {
+                      "type": "string"
+                    },
+                    "surname": {
                       "type": "string"
                     },
                     "email": {
@@ -112,95 +115,7 @@
         }
       }
     },
-    "/users/{userId}": {
-      "get": {
-        "description": "Getting profile information from currently logged in user (coach)",
-        "security": {
-          "jwt_key": []
-        },
-        "requestBody": {
-          "description": "Sending authentication information to get profile information linked to userId",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "user_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User is authenticated and user profile information were gathered from database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "fullname": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request cannot be computed - client sent invalid data to server endpoint",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User authentication failed. Invalid authorization credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Something went wrong on the server side - Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
+    "/users": {
       "post": {
         "description": "Registering an user (coach) to the system",
         "requestBody": {
@@ -260,6 +175,21 @@
               }
             }
           },
+          "403": {
+            "description": "User was not registered because there is an user with the same email available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Something went wrong on the server side - Internal Server Error",
             "content": {
@@ -277,7 +207,98 @@
           }
         }
       },
-      "patch": {
+      "get": {
+        "description": "Getting profile information from currently logged in user (coach)",
+        "security": {
+          "jwt_key": []
+        },
+        "requestBody": {
+          "description": "Sending authentication information to get profile information linked to userId",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User is authenticated and user profile information were gathered from database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "forename": {
+                      "type": "string"
+                    },
+                    "surname": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request cannot be computed - client sent invalid data to server endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication failed. Invalid authorization credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong on the server side - Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
         "description": "Updating profile information of current logged in user",
         "security": {
           "jwt_key": []
@@ -843,7 +864,7 @@
         }
       },
 
-      "patch": {
+      "put": {
         "description": "Editing customer information",
         "security": {
           "jwt_key": []

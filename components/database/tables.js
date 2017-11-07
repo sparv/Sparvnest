@@ -3,6 +3,10 @@ const sequelize = require(`sequelize`)
 const tables = {
   User: function (db) {
     const schema = db.define(`users`, {
+      id: {
+        type: sequelize.STRING,
+        
+      },
       email: {
         type: sequelize.STRING,
         validate: {

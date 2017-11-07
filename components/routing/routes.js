@@ -12,49 +12,105 @@ function routing (server, dbTable, config) {
     next()
   })
 
-  server.post(`/register`, (req, res) => {
+  server.post(`/users`, (req, res) => {
     userRegistration(dbTable, req.body, (err, success, email) => {
-      if (err) console.log(err)
-      res.send({
-        username: email,
-        isRegistered: success
-      })
-      res.end()
+      if (err) {
+        return res
+          .status(500)
+          .send({
+            message: `An error happened on the server side`
+          })
+      }
+      if (!success) {
+        return res
+          .status(403)
+          .send({
+            message: `User not registered - there is already a user registered with this email adress`
+          })
+      }
+
+      if (success) {
+        return res
+          .status(200)
+          .send({
+            email: email,
+          })
+      }
     })
   })
 
-  server.post(`/update`, (req, res) => {
+  server.get(`/users/`, (req, res) => {
+    const token = req.headers.authorization.replace(`Bearer `, ``)
+
+    if ((token !== `undefined`) && (token !== ``)) {
+      jwt.verify(token, config.auth.secret, (err, verification) => {
+        if (err) {
+          console.log(err)
+          return res
+            .status(401)
+            .send({
+              message: `JWT authentication failed`
+          })
+        }
+
+        dbTable.findOne({ where: { uuid: verification.uuid } })
+          .then((user) => {
+            return res
+              .status(200)
+              .send({
+                email: user.email,
+                forename: user.forename,
+                surname: user.surname
+              })
+          })
+          .catch((err) => {
+            if (err) console.log(err)
+
+            return res
+              .status(500)
+              .send({
+                message: `Internal server error`
+              })
+          })
+      })
+    } else {
+      return res
+        .status(400)
+        .send({
+          message: `Invalid data - cannot computed`
+        })
+    }
+  })
+
+  server.put(`/users`, (req, res) => {
     updateUser(dbTable, req.body, (user) => {
       dbTable.findOne({ where: { email: user } })
       .then((userdata) => {
-        console.log(userdata)
         const token = jwt.sign({
-          'sub': 'user_autentication',
-          'name': userdata.email
-        },
-  config.auth.secret)
+          sub: `user_autentication`,
+          name: userdata.email,
+          uuid: userdata.uuid
+        }, config.auth.secret)
 
-        res.send({
-          email: userdata.email,
-          name: userdata.name,
-          token: token,
-          isUpdated: true
+        return res.send({
+          message: `User data was updated`
         })
       })
     })
   })
 
-  server.post(`/delete`, (req, res) => {
+  server.delete(`/users`, (req, res) => {
     const token = req.headers.authorization.replace(`Bearer `, ``)
+
     if ((token !== `undefined`) && (token !== ``)) {
       jwt.verify(token, config.auth.secret, (err, verification) => {
         if (err) {
           console.log(err)
-          res.send({
-            username: null,
-            createdAt: null,
-            isAuthenticated: false
-          })
+          return res
+            .status(401)
+            .send({
+              message: `User authentication failed`
+            })
         }
 
         dbTable.findOne({ where: { email: verification.name } })
@@ -64,130 +120,73 @@ function routing (server, dbTable, config) {
           if (hashedPassword === user.password) {
             dbTable.destroy({ where: { email: verification.name } })
             .then(() => {
-              res.send({
-                username: user.email,
-                isDeleted: true
+              return res.send({
+                message: `User deleted`
               })
-
-              res.end()
             })
             .catch((err) => {
               console.log(err)
-              res.send({
-                username: user.email,
-                isDeleted: false,
-                error: err
-              })
-
-              res.end()
+              return res
+                .status(400)
+                .send({
+                  message: `The request cannot be computed - client sent invalid data to server endpoint`
+                })
             })
           } else {
-            res.send({
-              username: user.email,
-              isDeleted: false,
-              error: `wrong password`
-            })
+            return res
+              .status(401)
+              .send({
+                message: `User authentication failed`
+              })
           }
         })
         .catch((err) => {
           console.log(err)
-          res.send({
-            username: null,
-            createdAt: null,
-            isAuthenticated: false
-          })
-
-          res.end()
+          return res
+            .status(500)
+            .send({
+              message: `Internal Server Error`
+            })
         })
       })
-    }
-  })
-
-  server.post(`/validate`, (req, res) => {
-    const token = req.headers.authorization.replace(`Bearer `, ``)
-    console.log(`received token: ${token}`)
-
-    if ((token !== `undefined`) && (token !== ``)) {
-      console.log(`token available`)
-      jwt.verify(token, config.auth.secret, (err, verification) => {
-        if (err) {
-          console.log(`err`)
-          console.log(err)
-          res.send({
-            username: null,
-            createdAt: null,
-            isAuthenticated: false
-          })
-        }
-
-        console.log(`verification`)
-        console.log(verification)
-
-        dbTable.findOne({ where: { email: verification.name } })
-     .then((user) => {
-       res.send({
-         username: user.email,
-         createdAt: user.createdAt,
-         isAuthenticated: true
-       })
-       res.end()
-     })
-     .catch((err) => {
-       if (err) console.log(err)
-
-       res.send({
-         username: null,
-         createdAt: null,
-         isAuthenticated: false
-       })
-       res.end()
-     })
-      })
-    } else {
-      res.send({
-        username: null,
-        createdAt: null,
-        isAuthenticated: false
-      })
-      res.end()
     }
   })
 
   server.post(`/login`, (req, res, next) => {
     passport.authenticate(`login`, (err, user, info) => {
-      if (err) { return next(err) }
+      if (err) {
+        return res
+          .status(500)
+          .send({
+            message: `An error happened on the server side`
+          })
+      }
       if (!user) {
-        console.log(`User not authenticated`)
-        return res.send({
-          auth: false,
-          user: null,
-          token: null
+        return res
+          .status(401)
+          .send({
+          message: `User authentication failed - Bad credentials`
         })
       } else {
         const jwtPayload = {
-          'sub': 'user_authentication',
-          'name': user.email
+          sub: `user_authentication`,
+          name: user.email,
+          uuid: user.uuid
         }
 
         const token = jwt.sign(jwtPayload, config.auth.secret)
 
-        return res.send({
-          auth: true,
-          user: user.email,
-          token: token,
-          name: user.name
+        return res
+          .status(200)
+          .send({
+            user_id: user.uuid,
+            forename: user.forename,
+            surname: user.surname,
+            email: user.email,
+            token: token,
         })
       }
     })(req, res, next)
-  })
-
-  server.post(`/logout`, (req, res, next) => {
-    if (req.isAuthenticated()) {
-      req.logout()
-      res.redirect(`/logout`)
-    } else {
-      res.redirect(`/register`)
-    }
   })
 
  // DEBUGGING PURPOSE ONLY
