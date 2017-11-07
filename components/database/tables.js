@@ -1,9 +1,9 @@
 const sequelize = require(`sequelize`)
 
 const tables = {
-  User: function (db) {
-    const schema = db.define(`users`, {
-      uuid: {
+  Users: function (db) {
+    const schemaUser = db.define(`users`, {
+      relation_id: {
         type: sequelize.UUID,
         defaultValue: sequelize.UUIDV4
       },
@@ -27,7 +27,35 @@ const tables = {
       }
     })
 
-    return schema
+    return schemaUser
+  },
+  Customers: function (db) {
+    const schemaCustomers = db.define(`customers`, {
+      email: {
+        type: sequelize.STRING,
+        validate: {
+          isEmail: true
+        }
+      },
+      forename: {
+        type: sequelize.STRING
+      },
+      surname: {
+        type: sequelize.STRING
+      },
+      phone: {
+        type: sequelize.INTEGER
+      },
+      relation_id: {
+        type: sequelize.STRING
+      },
+      customer_id: {
+        type: sequelize.UUID,
+        defaultValue: sequelize.UUIDV4
+      }
+    })
+
+    return schemaCustomers
   }
 }
 

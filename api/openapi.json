@@ -44,7 +44,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "uuid": {
+                    "relation_id": {
                       "type": "string",
                       "format": "uuid"
                     },
@@ -219,7 +219,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   }
@@ -310,7 +310,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -408,7 +408,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -497,7 +497,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   }
@@ -514,11 +514,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "list_id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "list": {
+                    "customer_list": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -595,6 +591,111 @@
             }
           }
         }
+      },
+      "post": {
+        "description": "Adding new customer to user customer list",
+        "security": {
+          "jwt_key": []
+        },
+        "requestBody": {
+          "description": "sending user token and user id saved on the client side with the information for the new customer which should be added into the database",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "relation_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "forename": {
+                    "type": "string"
+                  },
+                  "surname": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "phone": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was authenticated and new user was successful added to the relational customer list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request cannot be computed - client sent invalid data to server endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication failed. Invalid authorization credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong on the server side - Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/customers/{customerId}": {
@@ -610,11 +711,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "customer_id": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   }
@@ -635,7 +732,7 @@
                       "type": "string",
                       "format": "uuid"
                     },
-                    "forname": {
+                    "forename": {
                       "type": "string"
                     },
                     "surname": {
@@ -758,112 +855,7 @@
           }
         }
       },
-      "post": {
-        "description": "Adding new customer to user customer list",
-        "security": {
-          "jwt_key": []
-        },
-        "requestBody": {
-          "description": "sending user token and user id saved on the client side with the information for the new customer which should be added into the database",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "uuid": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "forename": {
-                    "type": "string"
-                  },
-                  "surname": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "phone": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "gender": {
-                    "type": "string"
-                  },
-                  "age": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User was authenticated and new user was successful added to the relational customer list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request cannot be computed - client sent invalid data to server endpoint",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User authentication failed. Invalid authorization credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Something went wrong on the server side - Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-
+      
       "put": {
         "description": "Editing customer information",
         "security": {
@@ -876,7 +868,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -985,7 +977,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "uuid": {
+                  "relation_id": {
                     "type": "string",
                     "format": "uuid"
                   },

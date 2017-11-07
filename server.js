@@ -15,9 +15,10 @@ const server = express()
 
 // DATABASE CONFIGURATION
 const db = initDb(config)
-const User = tables.User(db)
+const Users = tables.Users(db)
+const Customers = tables.Customers(db)
 
-initLoginStrategy(User)
+initLoginStrategy(Users)
 
 // FORM TEST
 server.use(express.static(path.join(__dirname, `html`)))
@@ -26,6 +27,6 @@ server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(passport.initialize())
 
-initRouting(server, User, config)
+initRouting(server, Users, Customers, config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
