@@ -179,7 +179,7 @@ function routing (server, dbTable, config) {
         return res
           .status(200)
           .send({
-            user_id: user.uuid,
+            uuid: user.uuid,
             forename: user.forename,
             surname: user.surname,
             email: user.email,

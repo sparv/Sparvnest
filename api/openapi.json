@@ -44,7 +44,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "user_id": {
+                    "uuid": {
                       "type": "string",
                       "format": "uuid"
                     },
@@ -219,7 +219,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   }
@@ -310,7 +310,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -408,7 +408,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -497,7 +497,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   }
@@ -610,7 +610,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -770,7 +770,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -876,7 +876,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },
@@ -985,7 +985,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "uuid": {
                     "type": "string",
                     "format": "uuid"
                   },

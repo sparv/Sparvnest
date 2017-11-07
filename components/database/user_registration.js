@@ -16,7 +16,8 @@ function userRegistration (dbTable, data, callback) {
         email: data.email,
         password: hashPassword(data.password, salt),
         salt: salt,
-        name: data.name
+        forename: data.forename,
+        surname: data.surname
       }).then((user) => {
         console.log(`User ${user.email} created`)
         callback(null, true, user.email)
