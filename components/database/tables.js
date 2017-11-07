@@ -3,9 +3,9 @@ const sequelize = require(`sequelize`)
 const tables = {
   User: function (db) {
     const schema = db.define(`users`, {
-      id: {
-        type: sequelize.STRING,
-        
+      uuid: {
+        type: sequelize.UUID,
+        defaultValue: sequelize.UUIDV4
       },
       email: {
         type: sequelize.STRING,
@@ -19,7 +19,10 @@ const tables = {
       salt: {
         type: sequelize.STRING
       },
-      name: {
+      forename: {
+        type: sequelize.STRING
+      },
+      surname: {
         type: sequelize.STRING
       }
     })
