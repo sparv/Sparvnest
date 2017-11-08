@@ -33,7 +33,7 @@ function routing (server, tableUsers, tableCustomers, config) {
         return res
           .status(200)
           .send({
-            email: email,
+            email: email
           })
       }
     })
@@ -50,7 +50,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         tableUsers.findOne({ where: { relation_id: verification.relation_id } })
@@ -86,6 +86,7 @@ function routing (server, tableUsers, tableCustomers, config) {
     updateUser(tableUsers, req.body, (user) => {
       tableUsers.findOne({ where: { email: user } })
       .then((userdata) => {
+        // send token back to client for authentication with new userdata
         const token = jwt.sign({
           sub: `user_autentication`,
           name: userdata.email,
@@ -93,7 +94,8 @@ function routing (server, tableUsers, tableCustomers, config) {
         }, config.auth.secret)
 
         return res.send({
-          message: `User data was updated`
+          message: `User data was updated`,
+          token: token
         })
       })
     })
@@ -165,8 +167,8 @@ function routing (server, tableUsers, tableCustomers, config) {
         return res
           .status(401)
           .send({
-          message: `User authentication failed - Bad credentials`
-        })
+            message: `User authentication failed - Bad credentials`
+          })
       } else {
         const jwtPayload = {
           sub: `user_authentication`,
@@ -183,8 +185,8 @@ function routing (server, tableUsers, tableCustomers, config) {
             forename: user.forename,
             surname: user.surname,
             email: user.email,
-            token: token,
-        })
+            token: token
+          })
       }
     })(req, res, next)
   })
@@ -200,7 +202,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         console.log(`veri`)
@@ -222,7 +224,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             return res
               .status(200)
               .send({
-                customer_list: customerList,
+                customer_list: customerList
               })
           })
           .catch((err) => {
@@ -255,7 +257,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         tableCustomers.findOne({ where: {
@@ -308,7 +310,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         tableCustomers.findOne({ where: {
@@ -372,7 +374,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         tableCustomers.findOne({ where: {
@@ -430,7 +432,7 @@ function routing (server, tableUsers, tableCustomers, config) {
             .status(401)
             .send({
               message: `JWT authentication failed`
-          })
+            })
         }
 
         tableCustomers.destroy({ where: {

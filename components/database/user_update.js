@@ -1,4 +1,4 @@
-//TODO authentication and full api specs implementation needed!!!
+// TODO authentication and full api specs implementation needed!!!
 //
 const hashPassword = require(`./hash_password`)
 

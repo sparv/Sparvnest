@@ -10,13 +10,13 @@ const config = require(`../config.json`)
 const db = initDb(config)
 const tableUsers = tables.Users(db)
 const reqBody = {
-  "email": "unittest@test.test",
-  "password": "testpassword",
-  "forename": "test",
-  "surname": "test"
+  'email': 'unittest@test.test',
+  'password': 'testpassword',
+  'forename': 'test',
+  'surname': 'test'
 }
 
-//db testuser cleanup
+// db testuser cleanup
 //
 test.before(t => {
   return tableUsers.destroy({
@@ -27,7 +27,7 @@ test.before(t => {
 })
 
 test.serial.cb(`Registering User`, t => {
-  //Running userReg the first time to create the user entry
+  // Running userReg the first time to create the user entry
   userRegistration(tableUsers, reqBody, (err, success, email) => {
     let emailIsString
     (typeof email === `string`) ? emailIsString = true : emailIsString = false
@@ -43,7 +43,7 @@ test.serial.cb(`Registering User`, t => {
 })
 
 test.serial.cb(`Checking if user is already registered`, t => {
-  //Running userReg the second time to test if it checks if the user is already registered
+  // Running userReg the second time to test if it checks if the user is already registered
   userRegistration(tableUsers, reqBody, (err, success, email) => {
     if (!success) {
       t.pass()
@@ -57,11 +57,11 @@ test.serial.cb(`Checking if user is already registered`, t => {
 
 const reqBodyUpdate = {
   current: {
-    "email": "unittest@test.test",
+    'email': 'unittest@test.test'
   },
   update: {
-    "email": "updatedunittest@test.test",
-    "password": "updatedtestpassword",
+    'email': 'updatedunittest@test.test',
+    'password': 'updatedtestpassword'
   }
 }
 
