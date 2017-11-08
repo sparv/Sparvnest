@@ -855,7 +855,6 @@
           }
         }
       },
-      
       "put": {
         "description": "Editing customer information",
         "security": {
@@ -868,15 +867,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "customer_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "forname": {
+                  "forename": {
                     "type": "string"
                   },
                   "surname": {
@@ -977,14 +968,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "customer_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "surname": {
                     "type": "string"
                   }

@@ -438,12 +438,21 @@ function routing (server, tableUsers, tableCustomers, config) {
           relation_id: verification.relation_id,
           surname: req.body.surname
         } })
-          .then(() => {
-            return res
-              .status(200)
-              .send({
-                message: `Customer deleted`
-              })
+          .then((affectedRows) => {
+            console.log(affectedRows)
+            if (affectedRows === 0) {
+              return res
+                .status(400)
+                .send({
+                  message: `No Customer deleted`
+                })
+            } else {
+              return res
+                .status(200)
+                .send({
+                  message: `Customer deleted`
+                })
+            }
           })
           .catch((err) => {
             if (err) console.log(err)
