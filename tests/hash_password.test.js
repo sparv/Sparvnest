@@ -1,5 +1,5 @@
 const test = require(`ava`)
-const hashPassword = require(`./hash_password`)
+const hashPassword = require(`../components/database/hash_password`)
 
 test(`Return hashed password`, t => {
   const salt = `foobarsaltysalt`

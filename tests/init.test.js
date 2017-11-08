@@ -1,6 +1,6 @@
 const test = require(`ava`)
-const config = require(`../../config.json`)
-const init = require(`./init`)
+const config = require(`../config.json`)
+const init = require(`../components/database/init`)
 
 test(`initialization of database`, t => {
   const db = init(config)

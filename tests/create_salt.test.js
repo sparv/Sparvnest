@@ -1,5 +1,5 @@
 const test = require(`ava`)
-const createSalt = require(`./create_salt`)
+const createSalt = require(`../components/database/create_salt`)
 
 test(`generating salt as string`, t => {
   const salt = createSalt()

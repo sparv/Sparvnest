@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "ava \"components/**/*.test.js\"",
+    "test": "ava \"tests/*.test.js\"",
     "test:verbose": "ava \"components/**/*.test.js\" --verbose"
   },
   "repository": {

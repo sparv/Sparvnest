@@ -13,12 +13,9 @@ function initializeDatabase (config) {
   })
 
   db.authenticate()
-  .then(() => {
-    console.log(`Database authentication successful`)
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+    .catch((err) => {
+      console.log(err)
+    })
 
   return db
 }

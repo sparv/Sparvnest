@@ -1,11 +1,11 @@
 const test = require(`ava`)
 
-const userRegistration = require(`./user_registration`)
-const userUpdate = require(`./user_update`)
+const userRegistration = require(`../components/database/user_registration`)
+const userUpdate = require(`../components/database/user_update`)
 
-const initDb = require(`../database/init`)
-const tables = require(`../database/tables`)
-const config = require(`../../config.json`)
+const initDb = require(`../components/database/init`)
+const tables = require(`../components/database/tables`)
+const config = require(`../config.json`)
 
 const db = initDb(config)
 const tableUsers = tables.Users(db)
