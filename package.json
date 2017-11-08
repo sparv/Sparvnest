@@ -1,33 +1,36 @@
 {
-	"name": "sparvnest",
-	"version": "0.0.1",
-	"description": "Application to handle database requests and communication with frontend via REST API",
-	"main": "server.js",
-	"scripts": {
-		"dev": "nodemon server.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@bitbucket.org/sparv/sparvnest.git"
-	},
-	"author": "Daniel Henning",
-	"license": "UNLICENSED",
-	"homepage": "https://bitbucket.org/sparv/sparvnest#readme",
-	"dependencies": {
-		"body-parser": "^1.18.1",
-		"connect-flash": "^0.1.1",
-		"express": "^4.15.4",
-		"jsonwebtoken": "^8.0.1",
-		"memorystore": "^1.5.0",
-		"moment": "^2.18.1",
-		"passport": "^0.4.0",
-		"passport-local": "^1.0.0",
-		"pg": "^7.3.0",
-		"pg-hstore": "^2.3.2",
-		"sequelize": "^4.8.3"
-	},
-	"devDependencies": {
-		"nodemon": "^1.12.1",
-		"standard": "^10.0.3"
-	}
+  "name": "sparvnest",
+  "version": "0.0.1",
+  "description": "Application to handle database requests and communication with frontend via REST API",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "ava \"components/**/*.test.js\"",
+    "test:verbose": "ava \"components/**/*.test.js\" --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/sparv/sparvnest.git"
+  },
+  "author": "Daniel Henning",
+  "license": "UNLICENSED",
+  "homepage": "https://bitbucket.org/sparv/sparvnest#readme",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "connect-flash": "^0.1.1",
+    "express": "^4.15.4",
+    "jsonwebtoken": "^8.0.1",
+    "memorystore": "^1.5.0",
+    "moment": "^2.18.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.3.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.8.3"
+  },
+  "devDependencies": {
+    "ava": "^0.23.0",
+    "nodemon": "^1.12.1",
+    "standard": "^10.0.3"
+  }
 }
