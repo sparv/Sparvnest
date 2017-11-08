@@ -9,6 +9,7 @@ function routing (server, tableUsers, tableCustomers, config) {
   server.use((req, res, next) => {
     res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
     res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
+    res.append(`Access-Control-Allow-Methods`, ['GET, POST, PUT, DELETE, OPTIONS'])
     next()
   })
 
