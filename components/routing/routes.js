@@ -1,6 +1,6 @@
 const passport = require(`passport`)
 const userRegistration = require(`../database/user_registration`)
-const updateUser = require(`../database/user_update`)
+const userUpdate = require(`../database/user_update`)
 const jwt = require(`jsonwebtoken`)
 
 const hashPassword = require(`../database/hash_password`)
@@ -14,30 +14,7 @@ function routing (server, tableUsers, tableCustomers, config) {
   })
 
   server.post(`/users`, (req, res) => {
-    userRegistration(tableUsers, req.body, (err, success, email) => {
-      if (err) {
-        return res
-          .status(500)
-          .send({
-            message: `An error happened on the server side`
-          })
-      }
-      if (!success) {
-        return res
-          .status(403)
-          .send({
-            message: `User not registered - there is already a user registered with this email adress`
-          })
-      }
-
-      if (success) {
-        return res
-          .status(200)
-          .send({
-            email: email
-          })
-      }
-    })
+    userRegistration(res, tableUsers, req.body)
   })
 
   server.get(`/users/`, (req, res) => {
@@ -84,7 +61,7 @@ function routing (server, tableUsers, tableCustomers, config) {
   })
 
   server.put(`/users`, (req, res) => {
-    updateUser(tableUsers, req.body, (user) => {
+    userUpdate(tableUsers, req.body, (user) => {
       tableUsers.findOne({ where: { email: user } })
       .then((userdata) => {
         // send token back to client for authentication with new userdata
