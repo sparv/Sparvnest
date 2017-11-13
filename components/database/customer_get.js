@@ -19,20 +19,29 @@ function customerGet (request, response, tableCustomers, config) {
         relation_id: verification.relation_id
       } })
         .then((customer) => {
-          return response
-            .status(200)
-            .send({
-              customer_id: customer.customer_id,
-              forename: customer.forename,
-              surname: customer.surname,
-              phone: customer.phone,
-              email: customer.email,
-              gender: customer.gender,
-              age: customer.age,
-              notes: customer.notes,
-              dates: [],
-              trainingplans: []
-            })
+          console.log(customer)
+          if (customer !== null) {
+            return response
+              .status(200)
+              .send({
+                customer_id: customer.customer_id,
+                forename: customer.forename,
+                surname: customer.surname,
+                phone: customer.phone,
+                email: customer.email,
+                gender: customer.gender,
+                age: customer.age,
+                notes: customer.notes,
+                dates: [],
+                trainingplans: []
+              })
+          } else {
+            return response
+              .status(404)
+              .send({
+                message: `User with this ID not found`
+              })
+          }
         })
         .catch((err) => {
           if (err) console.log(err)
