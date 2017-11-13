@@ -14,7 +14,7 @@ function customerDelete (request, response, tableCustomers, config) {
       }
 
       tableCustomers.destroy({ where: {
-        customer_id: req.params.customerId,
+        customer_id: request.params.customerId,
         relation_id: verification.relation_id,
         surname: request.body.surname
       } })
