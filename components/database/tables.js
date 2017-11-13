@@ -44,7 +44,16 @@ const tables = {
         type: sequelize.STRING
       },
       phone: {
-        type: sequelize.INTEGER
+        type: sequelize.STRING
+      },
+      gender: {
+        type: sequelize.STRING
+      },
+      age: {
+        type: sequelize.STRING
+      },
+      notes: {
+        type: sequelize.STRING
       },
       relation_id: {
         type: sequelize.STRING
