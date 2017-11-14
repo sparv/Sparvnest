@@ -35,7 +35,8 @@ function customerAdd (request, response, tableCustomers, config) {
               email: data.email,
               phone: data.phone,
               gender: data.gender,
-              age: data.age
+              age: data.age,
+              notes: data.notes
             }).then(customer => {
               return response
                 .status(200)
