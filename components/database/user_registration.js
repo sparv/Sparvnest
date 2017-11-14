@@ -1,7 +1,8 @@
+const jwt = require(`jsonwebtoken`)
 const hashPassword = require(`./hash_password`)
 const createSalt = require(`./create_salt`)
 
-function userRegistration (response, dbTable, data) {
+function userRegistration (response, dbTable, data, config) {
   dbTable.findOne({ where: { email: data.email } })
   .then((user) => {
     if (user) {
@@ -19,10 +20,22 @@ function userRegistration (response, dbTable, data) {
         forename: data.forename,
         surname: data.surname
       }).then((user) => {
+        const jwtPayload = {
+          sub: `user_authentication`,
+          name: user.email,
+          relation_id: user.relation_id
+        }
+
+        const token = jwt.sign(jwtPayload, config.auth.secret)
+
         return response
           .status(200)
           .send({
-            email: data.email
+            relation_id: user.relation_id,
+            forename: user.forename,
+            surname: user.surname,
+            email: user.email,
+            token: token
           })
       })
     }

@@ -151,9 +151,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "relation_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "forename": {
+                      "type": "string"
+                    },
+                    "surname": {
+                      "type": "string"
+                    },
                     "email": {
                       "type": "string",
                       "format": "email"
+                    },
+                    "token": {
+                      "type": "string",
+                      "format": "jwt"
                     }
                   }
                 }

@@ -21,7 +21,7 @@ function routing (server, tableUsers, tableCustomers, config) {
   })
 
   server.post(`/users`, (req, res) => {
-    userRegistration(res, tableUsers, req.body)
+    userRegistration(res, tableUsers, req.body, config)
   })
 
   server.get(`/users`, (req, res) => {
