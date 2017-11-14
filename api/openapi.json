@@ -310,22 +310,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "forename": {
+                        "type": "string"
+                      },
+                      "surname": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email"
+                      }
+                    }
                   },
-                  "forename": {
-                    "type": "string"
-                  },
-                  "surname": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "password": {
-                    "type": "string"
+                  "security": {
+                    "type": "object",
+                    "properties": {
+                      "password_old": {
+                        "type": "string"
+                      },
+                      "password_new": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
