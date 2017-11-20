@@ -19,6 +19,7 @@
     "body-parser": "^1.18.1",
     "connect-flash": "^0.1.1",
     "express": "^4.15.4",
+    "joi": "^13.0.2",
     "jsonwebtoken": "^8.0.1",
     "memorystore": "^1.5.0",
     "moment": "^2.18.1",

@@ -229,17 +229,7 @@
         "requestBody": {
           "description": "Sending authentication information to get profile information linked to userId",
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
+            "application/json": {}
           }
         },
         "responses": {
@@ -513,19 +503,9 @@
           "jwt_key": []
         },
         "requestBody": {
-          "description": "sending user token and user id saved on the client side",
+          "description": "sending user token and relation id saved on the client side",
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
+            "application/json": {}
           }
         },
         "responses": {
@@ -729,17 +709,7 @@
         "requestBody": {
           "description": "sending user token and user id saved on the client side",
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              }
-            }
+            "application/json": {}
           }
         },
         "responses": {
