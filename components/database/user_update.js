@@ -2,7 +2,11 @@ const hashPassword = require(`./hash_password`)
 const jwt = require(`jsonwebtoken`)
 
 function userUpdate (request, response, tableUsers, config) {
-  const token = request.headers.authorization.replace(`Bearer `, ``)
+  let token = ``
+
+  if (request.headers.authorization !== undefined) {
+    token = request.headers.authorization.replace(`Bearer `, ``)
+  }
 
   if ((token !== `undefined`) && (token !== ``)) {
     jwt.verify(token, config.auth.secret, (err, verification) => {
@@ -135,6 +139,12 @@ function userUpdate (request, response, tableUsers, config) {
           })
       }
     })
+  } else {
+    return response
+      .status(401)
+      .send({
+        message: `Authentication failed - no/wrong authentication token`
+      })
   }
 }
 
