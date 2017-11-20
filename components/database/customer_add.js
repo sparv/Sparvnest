@@ -49,8 +49,7 @@ function customerAdd (request, response, tableCustomers, config) {
                     email: customer.email,
                     phone: customer.phone,
                     gender: customer.gender,
-                    age: customer.age,
-                    notes: customer.notes
+                    age: customer.age
                   }
                 })
             })
