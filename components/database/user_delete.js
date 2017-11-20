@@ -1,5 +1,12 @@
-function userDelete (request, response, tableUsers) {
-  const token = req.headers.authorization.replace(`Bearer `, ``)
+const jwt = require(`jsonwebtoken`)
+const hashPassword = require(`./hash_password`)
+
+function userDelete (request, response, tableUsers, config) {
+  let token = ``
+
+  if (request.headers.authorization !== undefined) {
+    token = request.headers.authorization.replace(`Bearer `, ``)
+  }
 
   if ((token !== `undefined`) && (token !== ``)) {
     jwt.verify(token, config.auth.secret, (err, verification) => {
@@ -48,6 +55,12 @@ function userDelete (request, response, tableUsers) {
           })
       })
     })
+  } else {
+    return response
+      .status(401)
+      .send({
+        message: `Authentication failed - no/wrong authentication token`
+      })
   }
 }
 

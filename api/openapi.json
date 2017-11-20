@@ -420,7 +420,6 @@
               }
             }
           }
-
         }
       },
       "delete": {
@@ -435,10 +434,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "relation_id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "password": {
                     "type": "string"
                   }
