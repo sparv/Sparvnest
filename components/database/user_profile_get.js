@@ -1,7 +1,11 @@
 const jwt = require(`jsonwebtoken`)
 
 function userProfileGet (request, response, tableUsers, config) {
-  const token = request.headers.authorization.replace(`Bearer `, ``)
+  let token = ``
+
+  if (request.headers.authorization !== undefined) {
+    token = request.headers.authorization.replace(`Bearer `, ``)
+  }
 
   if ((token !== `undefined`) && (token !== ``)) {
     jwt.verify(token, config.auth.secret, (err, verification) => {
@@ -36,9 +40,9 @@ function userProfileGet (request, response, tableUsers, config) {
     })
   } else {
     return response
-      .status(400)
+      .status(401)
       .send({
-        message: `Invalid data - cannot computed`
+        message: `Authentication failed - no/wrong authentication token`
       })
   }
 }
