@@ -41,7 +41,17 @@ function customerAdd (request, response, tableCustomers, config) {
               return response
                 .status(200)
                 .send({
-                  message: `Customer added`
+                  message: `Customer added`,
+                  customer: {
+                    id: customer.id,
+                    forename: customer.forename,
+                    surname: customer.surname,
+                    email: customer.email,
+                    phone: customer.phone,
+                    gender: customer.gender,
+                    age: customer.age,
+                    notes: customer.notes
+                  }
                 })
             })
           }
