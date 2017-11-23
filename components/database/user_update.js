@@ -1,151 +1,157 @@
 const hashPassword = require(`./hash_password`)
 const jwt = require(`jsonwebtoken`)
+const Joi = require(`joi`)
+const schema = require(`../routing/schemavalidation_request`)
 
 function userUpdate (request, response, tableUsers, config) {
-  let token = ``
-
-  if (request.headers.authorization !== undefined) {
-    token = request.headers.authorization.replace(`Bearer `, ``)
+  let auth = {
+    token: request.headers.authorization
   }
 
-  if ((token !== `undefined`) && (token !== ``)) {
-    jwt.verify(token, config.auth.secret, (err, verification) => {
-      if (err) {
-        console.log(`JWT authentication failed`)
-        return response
-          .status(401)
-          .send({
-            message: `User authentication failed`
-          })
-      }
+  Joi.validate(auth, schema.user_update.requestHeader)
+    .then(() => {
+      const strippedToken = auth.token.replace(`Bearer `, ``)
 
-      if (request.body.meta === undefined && request.body.security === undefined) {
-        return response
-          .status(400)
-          .send({
-            message: `The data sent is invalid - no meta or security object found`
-          })
-      } else if (request.body.meta !== undefined && request.body.security !== undefined) {
-        return response
-          .status(400)
-          .send({
-            message: `The data sent is invalid - only one object is possible, meta or security`
-          })
-      } else if (request.body.meta !== undefined && request.body.security === undefined) {
-        const data = request.body.meta
+      jwt.verify(strippedToken, config.auth.secret, (err, verification) => {
+        if (err) {
+          console.log(`JWT authentication failed`)
 
-        let updateData = {}
+          return response
+            .status(401)
+            .send({
+              message: `User authentication failed`
+            })
+        }
 
-        if (data.forename !== null) updateData[`forename`] = data.forename
-        if (data.surname !== null) updateData[`surname`] = data.surname
-        if (data.email !== null) updateData[`email`] = data.email
+        if (request.body.meta === undefined && request.body.security === undefined) {
+          return response
+            .status(400)
+            .send({
+              message: `The data sent is invalid - no meta or security object found`
+            })
+        } else if (request.body.meta !== undefined && request.body.security !== undefined) {
+          return response
+            .status(400)
+            .send({
+              message: `The data sent is invalid - only one object is possible, meta or security`
+            })
+        } else if (request.body.meta !== undefined && request.body.security === undefined) {
+          const data = request.body.meta
 
-        tableUsers.findOne({ where: { email: updateData.email } })
-          .then(user => {
+          let updateData = {}
 
-            if (user !== null) {
-              return response
-                .status(400)
-                .send({
-                  message: `This email adress is already asociated with an user account`
-                })
-            }
+          if (data.forename !== null) updateData[`forename`] = data.forename
+          if (data.surname !== null) updateData[`surname`] = data.surname
+          if (data.email !== null) updateData[`email`] = data.email
 
-            console.log(verification)
+          tableUsers.findOne({ where: { email: updateData.email } })
+            .then(user => {
 
-            tableUsers.update(updateData, { where: { relation_id: verification.relation_id } })
-              .then((affectedRows) => {
-                tableUsers.findOne({ where: { relation_id: verification.relation_id }})
-                .then(user => {
-                  if (user === null) {
-                    return response
-                      .status(400)
-                      .send({
-                        message: `updated user could not be found`
-                      })
-                  }
-
-                  const token = jwt.sign({
-                    sub: `user_authentication`,
-                    name: user.email,
-                    relation_id: user.relation_id
-                  }, config.auth.secret)
-
-                  return response
-                    .status(200)
-                    .send({
-                      message: `User data was updated`,
-                      token: token
-                    })
-                })
-              })
-              .catch(() => {
+              if (user !== null) {
                 return response
-                  .status(500)
+                  .status(400)
                   .send({
-                    message: `Database Error - User was not updated`
+                    message: `This email adress is already asociated with an user account`
                   })
-              })
-          })
-          .catch(() => {
-            return response
-              .status(500)
-              .send({
-                message: `Database Error - User was not updated`
-              })
-          })
-      } else if (request.body.meta === undefined && request.body.security !== undefined) {
-        const data = request.body.security
+              }
 
-        tableUsers.findOne({ where: { relation_id: verification.relation_id } })
-          .then(user => {
-            const password = {
-              old: hashPassword(data.password_old, user.salt),
-              new: hashPassword(data.password_new, user.salt)
-            }
+              console.log(verification)
 
-            if (user.password === password.old) {
-              tableUsers.update({ password: password.new }, {
-                where: { email: user.email }
-              })
-                .then(() => {
-                  const token = jwt.sign({
-                    sub: `user_autentication`,
-                    name: user.email,
-                    relation_id: user.relation_id
-                  }, config.auth.secret)
+              tableUsers.update(updateData, { where: { relation_id: verification.relation_id } })
+                .then((affectedRows) => {
+                  tableUsers.findOne({ where: { relation_id: verification.relation_id }})
+                  .then(user => {
+                    if (user === null) {
+                      return response
+                        .status(400)
+                        .send({
+                          message: `updated user could not be found`
+                        })
+                    }
 
+                    const token = jwt.sign({
+                      sub: `user_authentication`,
+                      name: user.email,
+                      relation_id: user.relation_id
+                    }, config.auth.secret)
+
+                    return response
+                      .status(200)
+                      .send({
+                        message: `User data was updated`,
+                        token: token
+                      })
+                  })
+                })
+                .catch(() => {
                   return response
-                    .status(200)
+                    .status(500)
                     .send({
-                      message: `User password was updated`,
-                      token: token
+                      message: `Database Error - User was not updated`
                     })
                 })
-            } else {
+            })
+            .catch(() => {
               return response
-                .status(401)
+                .status(500)
                 .send({
-                  message: `Authentication failed - current password is associated with this user`
+                  message: `Database Error - User was not updated`
                 })
-            }
-          })
-          .catch(() => {
-            return response
-              .status(500)
-              .send({
-                message: `Database Error: User not found`
-              })
-          })
-      }
-    })
-  } else {
-    return response
-      .status(401)
-      .send({
-        message: `Authentication failed - no/wrong authentication token`
+            })
+        } else if (request.body.meta === undefined && request.body.security !== undefined) {
+          const data = request.body.security
+
+          tableUsers.findOne({ where: { relation_id: verification.relation_id } })
+            .then(user => {
+              const password = {
+                old: hashPassword(data.password_old, user.salt),
+                new: hashPassword(data.password_new, user.salt)
+              }
+
+              if (user.password === password.old) {
+                tableUsers.update({ password: password.new }, {
+                  where: { email: user.email }
+                })
+                  .then(() => {
+                    const token = jwt.sign({
+                      sub: `user_autentication`,
+                      name: user.email,
+                      relation_id: user.relation_id
+                    }, config.auth.secret)
+
+                    return response
+                      .status(200)
+                      .send({
+                        message: `User password was updated`,
+                        token: token
+                      })
+                  })
+              } else {
+                return response
+                  .status(401)
+                  .send({
+                    message: `Authentication failed - current password is associated with this user`
+                  })
+              }
+            })
+            .catch(() => {
+              return response
+                .status(500)
+                .send({
+                  message: `Database Error: User not found`
+                })
+            })
+        }
       })
-  }
-}
+    })
+    .catch((error) => {
+      console.log(error)
+
+      return response
+        .status(401)
+        .send({
+          message: `Authentication failed - no/wrong authentication token`
+        })
+    })
 
 module.exports = userUpdate
