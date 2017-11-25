@@ -20,15 +20,14 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
     }),
     requestBody: {
-      meta: Joi.object().keys({
+      meta: Joi.object().min(1).keys({
         email: Joi.string().email(),
-        password: Joi.string(),
         forename: Joi.string().regex(/^[a-zA-Z]+$/),
         surname: Joi.string().regex(/^[a-zA-Z]+$/)
       }),
       security: Joi.object().keys({
-        password_old: Joi.string(),
-        password_new: Joi.string()
+        password_old: Joi.string().required(),
+        password_new: Joi.string().required()
       })
     }
   },
@@ -47,7 +46,7 @@ const schema = {
   },
   customer_get: {
     requestParams: Joi.object().keys({
-      customer_id: Joi.number().required()
+      customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
