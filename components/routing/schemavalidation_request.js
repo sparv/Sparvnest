@@ -57,25 +57,25 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      relation_id: Joi.number(),
-      forename: Joi.string().regex(/^[a-zA-Z]+$/),
-      surname: Joi.string().regex(/^[a-zA-Z]+$/),
-      email: Joi.string().email(),
-      phone: Joi.number(),
-      gender: Joi.string(),
-      age: Joi.string()
+      relation_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
+      forename: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
+      surname: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
+      email: Joi.string().email().required(),
+      phone: Joi.number().required(),
+      gender: Joi.string().required(),
+      age: Joi.string().required()
     })
   },
   customer_update: {
     requestParams: Joi.object().keys({
-      customer_id: Joi.number().required()
+      customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      forename: Joi.string().regex(/^[a-zA-Z]+$/),
-      surname: Joi.string().regex(/^[a-zA-Z]+$/),
+      forename: Joi.string().regex(/^[a-zA-Z\s]+$/),
+      surname: Joi.string().regex(/^[a-zA-Z\s]+$/),
       phone: Joi.number(),
       email: Joi.string().email(),
       gender: Joi.string(),
@@ -84,13 +84,13 @@ const schema = {
   },
   customer_delete: {
     requestParams: Joi.object().keys({
-      customer_id: Joi.number().required()
+      customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      surname: Joi.string().regex(/^[a-zA-Z]+$/)
+      surname: Joi.string().regex(/^[a-zA-Z\s]+$/)
     })
   }
 }

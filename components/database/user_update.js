@@ -152,6 +152,8 @@ function userUpdate (request, response, tableUsers, config) {
                 })
             })
             .catch((error) => {
+              console.log(error)
+
               return response
                 .status(400)
                 .send({

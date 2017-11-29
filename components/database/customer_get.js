@@ -9,9 +9,10 @@ function customerGet (request, response, tableCustomers, config) {
 
   Joi.validate(auth, schema.customer_get.requestHeader)
     .then(() => {
-      jwt.verify(token, config.auth.secret, (err, verification) => {
-        if (err) {
-          console.log(err)
+      jwt.verify(token, config.auth.secret, (error, verification) => {
+        if (error) {
+          console.log(error)
+
           return response
             .status(401)
             .send({

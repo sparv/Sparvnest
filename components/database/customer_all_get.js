@@ -9,9 +9,12 @@ function customerAllGet (request, response, tableCustomers, config) {
 
   Joi.validate(auth, schema.customer_all_get.requestHeader)
     .then(() => {
-      jwt.verify(token, config.auth.secret, (err, verification) => {
-        if (err) {
-          console.log(err)
+      const strippedToken = auth.token.replace(`Bearer `, ``)
+
+      jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
+        if (error) {
+          console.log(error)
+
           return response
             .status(401)
             .send({
@@ -24,7 +27,7 @@ function customerAllGet (request, response, tableCustomers, config) {
             const customerList = users.map((user) => {
               return {
                 customer_id: user.customer_id,
-                forename: user.forname,
+                forename: user.forename,
                 surname: user.surname,
                 phone: user.phone,
                 email: user.email
