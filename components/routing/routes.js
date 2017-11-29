@@ -22,6 +22,12 @@ function routing (server, tableUsers, tableCustomers, config) {
 
   server.post(`/users`, (req, res) => {
     userRegistration(res, tableUsers, req.body, config)
+      .then(() => {
+        console.log(`[STATUS] User registered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}] User not registered`)
+      })
   })
 
   server.get(`/users`, (req, res) => {
