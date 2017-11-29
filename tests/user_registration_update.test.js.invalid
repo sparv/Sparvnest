@@ -10,10 +10,10 @@ const config = require(`../config.json`)
 const db = initDb(config)
 const tableUsers = tables.Users(db)
 const reqBody = {
-  'email': 'unittest@test.test',
-  'password': 'testpassword',
-  'forename': 'test',
-  'surname': 'test'
+  email: 'unittest@test.test',
+  password: 'testpassword',
+  forename: 'test',
+  surname: 'test'
 }
 
 // db testuser cleanup

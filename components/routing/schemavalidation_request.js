@@ -1,13 +1,14 @@
-const Joi = require('joi')
+const Joi = require(`joi`)
 
 const schema = {
+  // User login won't be validated until it got rewritten
   // user_login: Joi.object().keys({}),
   user_registration: {
     requestBody: Joi.object().keys({
         email: Joi.string().email().required(),
         password: Joi.string().required(),
-        forename: Joi.string().regex(/^[a-zA-Z]+$/).required(),
-        surname: Joi.string().regex(/^[a-zA-Z]+$/).required()
+        forename: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
+        surname: Joi.string().regex(/^[a-zA-Z\s]+$/).required()
       })
   },
   user_profile_get: {
@@ -22,8 +23,8 @@ const schema = {
     requestBody: {
       meta: Joi.object().min(1).keys({
         email: Joi.string().email(),
-        forename: Joi.string().regex(/^[a-zA-Z]+$/),
-        surname: Joi.string().regex(/^[a-zA-Z]+$/)
+        forename: Joi.string().regex(/^[a-zA-Z\s]+$/),
+        surname: Joi.string().regex(/^[a-zA-Z\s]+$/)
       }),
       security: Joi.object().keys({
         password_old: Joi.string().required(),
@@ -61,9 +62,9 @@ const schema = {
       forename: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
       surname: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
       email: Joi.string().email().required(),
-      phone: Joi.number().required(),
-      gender: Joi.string().required(),
-      age: Joi.string().required()
+      phone: Joi.string().regex(/^[0-9 +-]+$/).required(),
+      gender: Joi.string().regex(/^[a-zA-Z]+$/).required(),
+      age: Joi.string().regex(/^[0-9]+$/).required()
     })
   },
   customer_update: {
@@ -76,10 +77,10 @@ const schema = {
     requestBody: Joi.object().keys({
       forename: Joi.string().regex(/^[a-zA-Z\s]+$/),
       surname: Joi.string().regex(/^[a-zA-Z\s]+$/),
-      phone: Joi.number(),
+      phone: Joi.string().regex(/^[0-9 +-]+$/),
       email: Joi.string().email(),
-      gender: Joi.string(),
-      age: Joi.string(),
+      gender: Joi.string().regex(/^[a-zA-Z]+$/),
+      age: Joi.string().regex(/^[0-9]+$/),
     })
   },
   customer_delete: {
