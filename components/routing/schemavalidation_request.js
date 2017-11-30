@@ -13,12 +13,12 @@ const schema = {
   },
   user_profile_get: {
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     })
   },
   user_update: {
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: {
       meta: Joi.object().min(1).keys({
@@ -34,7 +34,7 @@ const schema = {
   },
   user_delete: {
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
       password: Joi.string().required()
@@ -42,7 +42,7 @@ const schema = {
   },
   customer_all_get: {
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     })
   },
   customer_get: {
@@ -50,12 +50,12 @@ const schema = {
       customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     })
   },
   customer_add: {
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
       relation_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
@@ -72,7 +72,7 @@ const schema = {
       customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
       forename: Joi.string().regex(/^[a-zA-Z\s]+$/),
@@ -88,7 +88,7 @@ const schema = {
       customer_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9.-]+$/).required()
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
       surname: Joi.string().regex(/^[a-zA-Z\s]+$/)
