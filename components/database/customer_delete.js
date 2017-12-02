@@ -3,72 +3,74 @@ const Joi = require(`joi`)
 const schema = require(`../routing/schemavalidation_request`)
 
 function customerDelete (request, response, tableCustomers, config) {
-  let auth = {
-    token: request.headers.authorization
-  }
+  return new Promise((resolve, reject) => {
+    let auth = {
+      token: request.headers.authorization
+    }
 
-  Joi.validate(auth, schema.customer_delete.requestHeader)
-    .then(() => {
-      const strippedToken = auth.token.replace(`Bearer `, ``)
+    Joi.validate(auth, schema.customer_delete.requestHeader)
+      .then(() => {
+        const strippedToken = auth.token.replace(`Bearer `, ``)
 
-      jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
-        if (error) {
-          return response
-            .status(401)
-            .send({
-              message: `JWT authentication failed`
-            })
-        }
+        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
+          if (error) {
+            reject(response
+              .status(401)
+              .send({
+                message: `JWT authentication failed`
+              }))
+          }
 
-        const customerId = request.params.customerId
+          const customerId = request.params.customerId
 
-        Joi.validate({customer_id: customerId}, schema.customer_delete.requestParams)
-          .then(() => {
-            Joi.validate(request.body, schema.customer_delete.requestBody)
+          Joi.validate({customer_id: customerId}, schema.customer_delete.requestParams)
             .then(() => {
-              tableCustomers.destroy({ where: {
-                customer_id: request.params.customerId,
-                relation_id: verification.relation_id,
-                surname: request.body.surname
-              } })
-                .then((affectedRows) => {
-                  console.log(affectedRows)
-                  if (affectedRows === 0) {
-                    return response
-                      .status(400)
-                      .send({
-                        message: `No Customer deleted`
-                      })
-                  } else {
-                    return response
-                      .status(200)
-                      .send({
-                        message: `Customer deleted`
-                      })
-                  }
-                })
+              Joi.validate(request.body, schema.customer_delete.requestBody)
+              .then(() => {
+                tableCustomers.destroy({ where: {
+                  customer_id: request.params.customerId,
+                  relation_id: verification.relation_id,
+                  surname: request.body.surname
+                } })
+                  .then((affectedRows) => {
+                    console.log(affectedRows)
+                    if (affectedRows === 0) {
+                      reject(response
+                        .status(400)
+                        .send({
+                          message: `No Customer deleted`
+                        }))
+                    } else {
+                      resolve(response
+                        .status(200)
+                        .send({
+                          message: `Customer deleted`
+                        }))
+                    }
+                  })
+              })
+              .catch((error) => {
+                console.log(error)
+
+                reject(response
+                  .status(400)
+                  .send({
+                    message: `[${error.name}] ${error.details[0].message}`
+                  }))
+              })
             })
             .catch((error) => {
               console.log(error)
 
-              return response
-                .status(400)
+              reject(response
+                .status(500)
                 .send({
-                  message: `[${error.name}] ${error.details[0].message}`
-                })
+                  message: `Customer not deleted`
+                }))
             })
-          })
-          .catch((error) => {
-            console.log(error)
-
-            return response
-              .status(500)
-              .send({
-                message: `Customer not deleted`
-              })
-          })
+        })
       })
-    })
+  })
 }
 
 module.exports = customerDelete
