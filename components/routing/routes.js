@@ -8,11 +8,16 @@ const customerGet = require(`../database/customer_get`)
 const customerAdd = require(`../database/customer_add`)
 const customerUpdate = require(`../database/customer_update`)
 const customerDelete = require(`../database/customer_delete`)
+const exerciseAdd = require(`../database/exercise_add`)
+const exerciseAllGet = require(`../database/exercise_all_get`)
+const exerciseGet = require(`../database/exercise_get`)
+const exerciseUpdate = require(`../database/exercise_update`)
+const exerciseDelete = require(`../database/exercise_delete`)
 const jwt = require(`jsonwebtoken`)
 
 const hashPassword = require(`../database/hash_password`)
 
-function routing (server, tableUsers, tableCustomers, config) {
+function routing (server, tableUsers, tableCustomers, tableExercises, config) {
   server.use((req, res, next) => {
     res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
     res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
@@ -149,10 +154,61 @@ function routing (server, tableUsers, tableCustomers, config) {
       })
   })
 
+  server.get(`/exercise`, (req, res) => {
+    exerciseAllGet(req, res, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Exercise List gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+  
+  server.post(`/exercise`, (req, res) => {
+    exerciseAdd(req, res, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Exercise added`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+  
+  server.get(`/exercise/:exerciseId`, (req, res) => {
+    exerciseGet(req, res, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Single Exercise gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+  
+  server.put(`/exercise/:exerciseId`, (req, res) => {
+    exerciseUpdate(req, res, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Exercise updated`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+  
+  server.delete(`/exercise/:exerciseId`, (req, res) => {
+    exerciseDelete(req, res, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Exercise delete`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
  // DEBUGGING PURPOSE ONLY
   server.get(`/resetDB`, (req, res) => {
     tableUsers.sync({force: true})
     tableCustomers.sync({force: true})
+    tableExercises.sync({force: true})
    .then(() => {
      res.send(`db reset`)
      res.end()

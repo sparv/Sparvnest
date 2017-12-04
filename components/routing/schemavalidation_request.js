@@ -94,6 +94,53 @@ const schema = {
     requestBody: Joi.object().keys({
       surname: Joi.string().required()
     })
+  },
+  exercise_add: {
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().keys({
+      name: Joi.string().required(),
+      level: Joi.string().required(),
+      description: Joi.string()
+    })
+  },
+  exercise_all_get: {
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    })
+  },
+  exercise_get: {
+    requestParams: Joi.object().keys({
+      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    })
+  },
+  exercise_update: {
+    requestParams: Joi.object().keys({
+      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().min(1).keys({
+      name: Joi.string(),
+      level: Joi.string(),
+      description: Joi.string()
+    })
+  },
+  exercise_delete: {
+    requestParams: Joi.object().keys({
+      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().keys({
+      name: Joi.string()
+    })
   }
 }
 

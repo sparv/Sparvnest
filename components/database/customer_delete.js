@@ -33,7 +33,6 @@ function customerDelete (request, response, tableCustomers, config) {
                   surname: request.body.surname
                 } })
                   .then((affectedRows) => {
-                    console.log(affectedRows)
                     if (affectedRows === 0) {
                       reject(response
                         .status(400)
