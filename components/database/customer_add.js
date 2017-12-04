@@ -16,11 +16,19 @@ function customerAdd (request, response, tableCustomers, config) {
           if (error) {
             console.log(error)
 
-            reject(response
-              .status(401)
-              .send({
-                message: `JWT authentication failed`
-              }))
+            if (error.name === `TokenExpiredError`) {
+              reject(response
+                .status(510)
+                .send({
+                  message: `JWT token expired`
+                }))
+            } else {
+              reject(response
+                .status(401)
+                .send({
+                  message: `JWT authentication failed`
+                }))
+            }
           }
 
           Joi.validate(request.body, schema.customer_add.requestBody)

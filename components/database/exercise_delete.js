@@ -14,11 +14,21 @@ function exerciseDelete (request, response, tableExercise, config) {
 
         jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
           if (error) {
-            reject(response
-              .status(401)
-              .send({
-                message: `JWT authentication failed`
-              }))
+            console.log(error)
+
+            if (error.name === `TokenExpiredError`) {
+              reject(response
+                .status(510)
+                .send({
+                  message: `JWT token expired`
+                }))
+            } else {
+              reject(response
+                .status(401)
+                .send({
+                  message: `JWT authentication failed`
+                }))
+            }
           }
 
           const exerciseId = request.params.exerciseId

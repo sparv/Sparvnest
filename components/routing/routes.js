@@ -89,7 +89,11 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
           relation_id: user.relation_id
         }
 
-        const token = jwt.sign(jwtPayload, config.auth.secret)
+        const jwtOptions = {
+          expiresIn: "15m"
+        }
+
+        const token = jwt.sign(jwtPayload, config.auth.secret, jwtOptions)
 
         return res
           .status(200)
@@ -163,7 +167,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
         console.log(`[ERROR ${error.statusCode}]`)
       })
   })
-  
+
   server.post(`/exercise`, (req, res) => {
     exerciseAdd(req, res, tableExercises, config)
       .then(() => {
@@ -173,7 +177,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
         console.log(`[ERROR ${error.statusCode}]`)
       })
   })
-  
+
   server.get(`/exercise/:exerciseId`, (req, res) => {
     exerciseGet(req, res, tableExercises, config)
       .then(() => {
@@ -183,7 +187,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
         console.log(`[ERROR ${error.statusCode}]`)
       })
   })
-  
+
   server.put(`/exercise/:exerciseId`, (req, res) => {
     exerciseUpdate(req, res, tableExercises, config)
       .then(() => {
@@ -193,7 +197,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
         console.log(`[ERROR ${error.statusCode}]`)
       })
   })
-  
+
   server.delete(`/exercise/:exerciseId`, (req, res) => {
     exerciseDelete(req, res, tableExercises, config)
       .then(() => {

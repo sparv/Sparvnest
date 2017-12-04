@@ -14,14 +14,22 @@ function userDelete (request, response, tableUsers, config) {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
         jwt.verify(strippedToken, config.auth.secret, (err, verification) => {
-          if (err) {
-            console.log(err)
+          if (error) {
+            console.log(error)
 
-            reject(response
-              .status(401)
-              .send({
-                message: `[ERROR] JWT token invalid`
-              }))
+            if (error.name === `TokenExpiredError`) {
+              reject(response
+                .status(510)
+                .send({
+                  message: `JWT token expired`
+                }))
+            } else {
+              reject(response
+                .status(401)
+                .send({
+                  message: `JWT authentication failed`
+                }))
+            }
           }
 
           Joi.validate(request.body, schema.user_delete.requestBody)

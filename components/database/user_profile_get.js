@@ -15,13 +15,22 @@ function userProfileGet (request, response, tableUsers, config) {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
         jwt.verify(strippedToken, config.auth.secret, (err, verification) => {
-          if (err) {
-            console.log(err)
-            reject(response
-              .status(401)
-              .send({
-                message: `JWT authentication failed`
-              }))
+          if (error) {
+            console.log(error)
+
+            if (error.name === `TokenExpiredError`) {
+              reject(response
+                .status(510)
+                .send({
+                  message: `JWT token expired`
+                }))
+            } else {
+              reject(response
+                .status(401)
+                .send({
+                  message: `JWT authentication failed`
+                }))
+            }
           }
 
           tableUsers.findOne({ where: { relation_id: verification.relation_id } })
