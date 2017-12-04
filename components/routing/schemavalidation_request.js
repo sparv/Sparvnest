@@ -58,7 +58,6 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      relation_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
       forename: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
       surname: Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
       email: Joi.string().email().required(),

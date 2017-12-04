@@ -25,6 +25,7 @@ function customerAdd (request, response, tableCustomers, config) {
 
           Joi.validate(request.body, schema.customer_add.requestBody)
             .then(() => {
+              console.log(verification.relation_id)
               tableCustomers.findOne({ where: {
                 email: request.body.email,
                 relation_id: verification.relation_id
