@@ -73,14 +73,14 @@ const testObjects = {
       userRegistration: {
         email: `Bacon ipsum.dolor`,
         password: null,
-        forename: `Bacon1337`,
-        surname: `Bacon1337`
+        forename: 1337,
+        surname: 1337
       },
       userUpdate: {
         meta: {
           email: `Bacon ipsum.dolor`,
-          forename: `Bacon1337`,
-          surname: `Bacon1337`
+          forename: 1337,
+          surname: 1337
         },
         security: {
           password_old: null,
@@ -92,23 +92,23 @@ const testObjects = {
       },
       customerAdd: {
         relation_id: `lak123123<Bacon>-asfsadr12.;;23312-sdfaf123412`,
-        forename: `Bacon1337`,
-        surname: `Bacon1337`,
+        forename: 1337,
+        surname: 1337,
         email: `Bacon ipsum.dolor`,
         phone: `Bacon ipsum dolor amet meatloaf`,
         gender: `000`,
         age: `Bacon`
       },
       customerUpdate: {
-        forename: `Bacon1337`,
-        surname: `Bacon1337`,
+        forename: 1337,
+        surname: 1337,
         email: `Bacon ipsum.dolor`,
         phone: `Bacon ipsum dolor amet meatloaf`,
         gender: `000`,
         age: `Bacon`
       },
       customerDelete: {
-        surname: `Bacon1337`
+        surname: 1337
       }
     }
   }

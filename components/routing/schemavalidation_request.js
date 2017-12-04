@@ -92,7 +92,7 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      surname: Joi.string().required/()
+      surname: Joi.string().required()
     })
   }
 }
