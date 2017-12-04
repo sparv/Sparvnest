@@ -50,7 +50,6 @@ const testObjects = {
         password: `Baconipsumdolorametmeatloafnew`
       },
       customerAdd: {
-        relation_id: `lak123123-asfsadr123312-sdfaf123412`,
         forename: `Bacon ipsum dolor amet meatloaf`,
         surname: `Bacon ipsum dolor amet meatloaf`,
         email: `Bacon@ipsum.dolor`,

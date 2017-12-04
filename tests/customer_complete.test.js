@@ -57,7 +57,6 @@ test.beforeEach(async t => {
 
 test.serial(`Add customer`, async t => {
   const requestBody = {
-    relation_id: t.context.relationId,
     forename: `testcustomer`,
     surname: `testcustomer`,
     email: `testcustomer@unit.test`,
