@@ -26,20 +26,39 @@ function routing (server, tableUsers, tableCustomers, config) {
         console.log(`[STATUS] User registered`)
       })
       .catch(error => {
-        console.log(`[ERROR ${error.statusCode}] User not registered`)
+        console.log(`[ERROR ${error.statusCode}]`)
       })
   })
 
   server.get(`/users`, (req, res) => {
     userProfileGet(req, res, tableUsers, config)
+      .then(() => {
+        console.log(`[STATUS] User profile gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+
   })
 
   server.put(`/users`, (req, res) => {
     userUpdate(req, res, tableUsers, config)
+      .then(() => {
+        console.log(`[STATUS] User updated`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   server.delete(`/users`, (req, res) => {
     userDelete(req, res, tableUsers, config)
+      .then(() => {
+        console.log(`[STATUS] User deleted`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   //TODO Refactor to remove passport dependency
@@ -82,22 +101,52 @@ function routing (server, tableUsers, tableCustomers, config) {
 
   server.get(`/customers`, (req, res) => {
     customerAllGet(req, res, tableCustomers, config)
+      .then(() => {
+        console.log(`[STATUS] Customer list gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   server.get(`/customers/:customerId`, (req, res) => {
     customerGet(req, res, tableCustomers, config)
+      .then(() => {
+        console.log(`[STATUS] Single customer gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   server.post(`/customers`, (req, res) => {
     customerAdd(req, res, tableCustomers, config)
+      .then(() => {
+        console.log(`[STATUS] Customer added`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   server.put(`/customers/:customerId`, (req, res) => {
     customerUpdate(req, res, tableCustomers, config)
+      .then(() => {
+        console.log(`[STATUS] Customer updated`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
   server.delete(`/customers/:customerId`, (req, res) => {
     customerDelete(req, res, tableCustomers, config)
+      .then(() => {
+        console.log(`[STATUS] Customer deleted`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
   })
 
  // DEBUGGING PURPOSE ONLY
