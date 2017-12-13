@@ -13,6 +13,7 @@ const exerciseAllGet = require(`../database/exercise_all_get`)
 const exerciseGet = require(`../database/exercise_get`)
 const exerciseUpdate = require(`../database/exercise_update`)
 const exerciseDelete = require(`../database/exercise_delete`)
+const tokenRefresh = require(`../authentication/token_refresh`)
 const jwt = require(`jsonwebtoken`)
 
 const hashPassword = require(`../database/hash_password`)
@@ -90,7 +91,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
         }
 
         const jwtOptions = {
-          expiresIn: "15m"
+          expiresIn: config.auth.tokenExpirationTime
         }
 
         const token = jwt.sign(jwtPayload, config.auth.secret, jwtOptions)
@@ -202,6 +203,16 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
     exerciseDelete(req, res, tableExercises, config)
       .then(() => {
         console.log(`[STATUS] Exercise delete`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
+  server.put(`/reauthenticate`, (req, res) => {
+    tokenRefresh(req, res, config)
+      .then(() => {
+        console.log(`[STATUS] New token exposed`)
       })
       .catch(error => {
         console.log(`[ERROR ${error.statusCode}]`)

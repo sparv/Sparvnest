@@ -38,8 +38,11 @@ test.beforeEach(async t => {
         name: user.email,
         relation_id: user.relation_id
       }
+      const testJwtOptions = {
+        expiresIn: `15m`
+      }
 
-      const testBearerToken = jwt.sign(testJwtPayload, config.auth.secret)
+      const testBearerToken = jwt.sign(testJwtPayload, config.auth.secret, testJwtOptions)
 
       t.context.relationId = user.relation_id
       t.context.bearerToken = testBearerToken

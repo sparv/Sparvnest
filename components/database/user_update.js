@@ -13,7 +13,7 @@ function userUpdate (request, response, tableUsers, config) {
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
-        jwt.verify(strippedToken, config.auth.secret, (err, verification) => {
+        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
           if (error) {
             console.log(error)
 

@@ -141,6 +141,11 @@ const schema = {
     requestBody: Joi.object().keys({
       name: Joi.string()
     })
+  },
+  token_refresh: {
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    })
   }
 }
 
