@@ -29,36 +29,35 @@ function customerAllGet (request, response, tableCustomers, config) {
                   message: `JWT authentication failed`
                 }))
             }
-          }
+          } else {
+            tableCustomers.findAll({ where: { relation_id: verification.relation_id } })
+              .then((users) => {
+                const customerList = users.map((user) => {
+                  return {
+                    customer_id: user.customer_id,
+                    forename: user.forename,
+                    surname: user.surname,
+                    phone: user.phone,
+                    email: user.email
+                  }
+                })
 
-
-          tableCustomers.findAll({ where: { relation_id: verification.relation_id } })
-            .then((users) => {
-              const customerList = users.map((user) => {
-                return {
-                  customer_id: user.customer_id,
-                  forename: user.forename,
-                  surname: user.surname,
-                  phone: user.phone,
-                  email: user.email
-                }
+                resolve(response
+                  .status(200)
+                  .send({
+                    customer_list: customerList
+                  }))
               })
+              .catch((err) => {
+                if (err) console.log(err)
 
-              resolve(response
-                .status(200)
-                .send({
-                  customer_list: customerList
-                }))
-            })
-            .catch((err) => {
-              if (err) console.log(err)
-
-              reject(response
-                .status(500)
-                .send({
-                  message: `Internal server error`
-                }))
-            })
+                reject(response
+                  .status(500)
+                  .send({
+                    message: `Internal server error`
+                  }))
+              })
+          }
         })
       })
       .catch((error) => {

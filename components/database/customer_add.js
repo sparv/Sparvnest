@@ -29,71 +29,71 @@ function customerAdd (request, response, tableCustomers, config) {
                   message: `JWT authentication failed`
                 }))
             }
-          }
-
-          Joi.validate(request.body, schema.customer_add.requestBody)
-            .then(() => {
-              console.log(verification.relation_id)
-              tableCustomers.findOne({ where: {
-                email: request.body.email,
-                relation_id: verification.relation_id
-              } })
-                .then((customer) => {
-                  if (customer) {
-                    reject(response
-                      .status(400)
-                      .send({
-                        message: `customer already added`
-                      }))
-                  } else {
-                    const data = request.body
-
-                    tableCustomers.create({
-                      relation_id: verification.relation_id,
-                      forename: data.forename,
-                      surname: data.surname,
-                      email: data.email,
-                      phone: data.phone,
-                      gender: data.gender,
-                      age: data.age,
-                      notes: data.notes
-                    }).then(customer => {
-                      resolve(response
-                        .status(200)
+          } else {
+            Joi.validate(request.body, schema.customer_add.requestBody)
+              .then(() => {
+                console.log(verification.relation_id)
+                tableCustomers.findOne({ where: {
+                  email: request.body.email,
+                  relation_id: verification.relation_id
+                } })
+                  .then((customer) => {
+                    if (customer) {
+                      reject(response
+                        .status(400)
                         .send({
-                          message: `Customer added`,
-                          customer: {
-                            id: customer.id,
-                            forename: customer.forename,
-                            surname: customer.surname,
-                            email: customer.email,
-                            phone: customer.phone,
-                            gender: customer.gender,
-                            age: customer.age
-                          }
+                          message: `customer already added`
                         }))
-                    })
-                  }
-                })
-                .catch((error) => {
-                  console.log(error)
+                    } else {
+                      const data = request.body
 
-                  reject(response
-                    .status(500)
-                    .send({
-                      message: `Internal server error`
-                    }))
-                })
-            })
-            .catch((error) => {
-              console.log(error)
+                      tableCustomers.create({
+                        relation_id: verification.relation_id,
+                        forename: data.forename,
+                        surname: data.surname,
+                        email: data.email,
+                        phone: data.phone,
+                        gender: data.gender,
+                        age: data.age,
+                        notes: data.notes
+                      }).then(customer => {
+                        resolve(response
+                          .status(200)
+                          .send({
+                            message: `Customer added`,
+                            customer: {
+                              id: customer.id,
+                              forename: customer.forename,
+                              surname: customer.surname,
+                              email: customer.email,
+                              phone: customer.phone,
+                              gender: customer.gender,
+                              age: customer.age
+                            }
+                          }))
+                      })
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error)
 
-              reject(response
-                .status(500)
-                .send({
-                  message: `[${error.name}] ${error.details[0].message}`
-                }))
-            })
+                    reject(response
+                      .status(500)
+                      .send({
+                        message: `Internal server error`
+                      }))
+                  })
+              })
+              .catch((error) => {
+                console.log(error)
+
+                reject(response
+                  .status(500)
+                  .send({
+                    message: `[${error.name}] ${error.details[0].message}`
+                  }))
+              })
+          }
         })
       })
       .catch((error) => {

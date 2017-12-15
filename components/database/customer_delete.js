@@ -29,54 +29,54 @@ function customerDelete (request, response, tableCustomers, config) {
                   message: `JWT authentication failed`
                 }))
             }
-          }
+          } else {
+            const customerId = request.params.customerId
 
-          const customerId = request.params.customerId
-
-          Joi.validate({customer_id: customerId}, schema.customer_delete.requestParams)
-            .then(() => {
-              Joi.validate(request.body, schema.customer_delete.requestBody)
+            Joi.validate({customer_id: customerId}, schema.customer_delete.requestParams)
               .then(() => {
-                tableCustomers.destroy({ where: {
-                  customer_id: request.params.customerId,
-                  relation_id: verification.relation_id,
-                  surname: request.body.surname
-                } })
-                  .then((affectedRows) => {
-                    if (affectedRows === 0) {
-                      reject(response
-                        .status(400)
-                        .send({
-                          message: `No Customer deleted`
-                        }))
-                    } else {
-                      resolve(response
-                        .status(200)
-                        .send({
-                          message: `Customer deleted`
-                        }))
-                    }
-                  })
+                Joi.validate(request.body, schema.customer_delete.requestBody)
+                .then(() => {
+                  tableCustomers.destroy({ where: {
+                    customer_id: request.params.customerId,
+                    relation_id: verification.relation_id,
+                    surname: request.body.surname
+                  } })
+                    .then((affectedRows) => {
+                      if (affectedRows === 0) {
+                        reject(response
+                          .status(400)
+                          .send({
+                            message: `No Customer deleted`
+                          }))
+                      } else {
+                        resolve(response
+                          .status(200)
+                          .send({
+                            message: `Customer deleted`
+                          }))
+                      }
+                    })
+                })
+                .catch((error) => {
+                  console.log(error)
+
+                  reject(response
+                    .status(400)
+                    .send({
+                      message: `[${error.name}] ${error.details[0].message}`
+                    }))
+                })
               })
               .catch((error) => {
                 console.log(error)
 
                 reject(response
-                  .status(400)
+                  .status(500)
                   .send({
-                    message: `[${error.name}] ${error.details[0].message}`
+                    message: `Customer not deleted`
                   }))
               })
-            })
-            .catch((error) => {
-              console.log(error)
-
-              reject(response
-                .status(500)
-                .send({
-                  message: `Customer not deleted`
-                }))
-            })
+          }
         })
       })
   })

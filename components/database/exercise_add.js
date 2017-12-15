@@ -29,64 +29,63 @@ function exerciseAdd (request, response, tableExercise, config) {
                   message: `JWT authentication failed`
                 }))
             }
+          } else {
+            Joi.validate(request.body, schema.exercise_add.requestBody)
+              .then(() => {
+                tableExercise.findOne({ where: {
+                  name: request.body.name,
+                  level: request.body.level
+                } })
+                  .then((exercise) => {
+                    if (exercise) {
+                      reject(response
+                        .status(400)
+                        .send({
+                          message: `exercise already exists`
+                        }))
+                    } else {
+                      const data = request.body
+
+                      tableExercise.create({
+                        name: data.name,
+                        level: data.level,
+                        description: data.description
+                      })
+                        .then(exercise => {
+                          resolve(response
+                            .status(200)
+                            .send({
+                              message: `[STATUS] Exercise added`,
+                              exercise: {
+                                exercise_id: exercise.exercise_id,
+                                name: exercise.name,
+                                level: exercise.level,
+                                description: exercise.description
+                              }
+                            }))
+                        })
+                        .catch(error => {
+                          console.log(error)
+
+                          reject(response
+                            .status(500)
+                            .send({
+                              message: `[ERROR] Database failed to save exercise`
+                            }))
+                        })
+                    }
+                  })
+              })
+              .catch((error) => {
+                console.log(error)
+
+                reject(response
+                  .status(500)
+                  .send({
+                    message: `[ERROR] Response body object validation failed`
+                  }))
+              })
           }
-
-          Joi.validate(request.body, schema.exercise_add.requestBody)
-            .then(() => {
-              tableExercise.findOne({ where: {
-                name: request.body.name,
-                level: request.body.level
-              } })
-                .then((exercise) => {
-                  if (exercise) {
-                    reject(response
-                      .status(400)
-                      .send({
-                        message: `exercise already exists`
-                      }))
-                  } else {
-                    const data = request.body
-
-                    tableExercise.create({
-                      name: data.name,
-                      level: data.level,
-                      description: data.description
-                    })
-                      .then(exercise => {
-                        resolve(response
-                          .status(200)
-                          .send({
-                            message: `[STATUS] Exercise added`,
-                            exercise: {
-                              exercise_id: exercise.exercise_id,
-                              name: exercise.name,
-                              level: exercise.level,
-                              description: exercise.description
-                            }
-                          }))
-                      })
-                      .catch(error => {
-                        console.log(error)
-
-                        reject(response
-                          .status(500)
-                          .send({
-                            message: `[ERROR] Database failed to save exercise`
-                          }))
-                      })
-                  }
-                })
-            })
-            .catch((error) => {
-              console.log(error)
-
-              reject(response
-                .status(500)
-                .send({
-                  message: `[ERROR] Response body object validation failed`
-                }))
-            })
-
         })
       })
   })

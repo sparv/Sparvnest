@@ -30,62 +30,62 @@ function userDelete (request, response, tableUsers, config) {
                   message: `JWT authentication failed`
                 }))
             }
-          }
+          } else {
+            Joi.validate(request.body, schema.user_delete.requestBody)
+              .then(() => {
+                tableUsers.findOne({ where: { email: verification.name } })
+                  .then((user) => {
+                    const hashedPassword = hashPassword(request.body.password, user.salt)
 
-          Joi.validate(request.body, schema.user_delete.requestBody)
-            .then(() => {
-              tableUsers.findOne({ where: { email: verification.name } })
-                .then((user) => {
-                  const hashedPassword = hashPassword(request.body.password, user.salt)
-
-                  if (hashedPassword === user.password) {
-                    tableUsers.destroy({ where: { email: verification.name } })
-                    .then(() => {
-                      resolve(response
-                        .status(200)
-                        .send({
-                          message: `User deleted`
-                        }))
-                    })
-                    .catch((err) => {
-                      console.log(err)
+                    if (hashedPassword === user.password) {
+                      tableUsers.destroy({ where: { email: verification.name } })
+                      .then(() => {
+                        resolve(response
+                          .status(200)
+                          .send({
+                            message: `User deleted`
+                          }))
+                      })
+                      .catch((err) => {
+                        console.log(err)
+                        reject(response
+                          .status(400)
+                          .send({
+                            message: `The request cannot be computed - client sent invalid data to server endpoint`
+                          }))
+                      })
+                    } else {
                       reject(response
-                        .status(400)
+                        .status(401)
                         .send({
-                          message: `The request cannot be computed - client sent invalid data to server endpoint`
+                          message: `User authentication failed`
                         }))
-                    })
-                  } else {
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err)
                     reject(response
-                      .status(401)
+                      .status(500)
                       .send({
-                        message: `User authentication failed`
+                        message: `Internal Server Error`
                       }))
-                  }
-                })
-                .catch((err) => {
-                  console.log(err)
-                  reject(response
-                    .status(500)
-                    .send({
-                      message: `Internal Server Error`
-                    }))
-                })
-            })
-            .catch((error) => {
-              rejecct(response
-                .status(400)
-                .send({
-                  message: `[${error.name}] ${error.details[0].message}`
-                }))
-            })
+                  })
+              })
+              .catch((error) => {
+                rejecct(response
+                  .status(400)
+                  .send({
+                    message: `[${error.name}] ${error.details[0].message}`
+                  }))
+              })
+          }
         })
       })
       .catch((error) => {
         reject(response
           .status(401)
           .send({
-            message: `[${error.name}] ${error.details[0].message}`
+            message: error
           }))
       })
   })

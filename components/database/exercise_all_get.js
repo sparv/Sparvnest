@@ -29,34 +29,34 @@ function exerciseAllGet (request, response, tableExercises, config) {
                   message: `JWT authentication failed`
                 }))
             }
-          }
+          } else {
+            tableExercises.findAll()
+              .then((exercises) => {
+                const exerciseList = exercises.map(exercise => {
+                  return {
+                    exercise_id: exercise.exercise_id,
+                    name: exercise.name,
+                    level: exercise.level,
+                    description: exercise.description
+                  }
+                })
 
-          tableExercises.findAll()
-            .then((exercises) => {
-              const exerciseList = exercises.map(exercise => {
-                return {
-                  exercise_id: exercise.exercise_id,
-                  name: exercise.name,
-                  level: exercise.level,
-                  description: exercise.description
-                }
+                resolve(response
+                  .status(200)
+                  .send({
+                    exercise_list: exerciseList
+                  }))
               })
+              .catch(error => {
+                console.log(error)
 
-              resolve(response
-                .status(200)
-                .send({
-                  exercise_list: exerciseList
-                }))
-            })
-            .catch(error => {
-              console.log(error)
-
-              reject(response
-                .status(500)
-                .send({
-                  message: `Exerciselist could not be fetched`
-                }))
-            })
+                reject(response
+                  .status(500)
+                  .send({
+                    message: `Exerciselist could not be fetched`
+                  }))
+              })
+          }
         })
       })
   })
