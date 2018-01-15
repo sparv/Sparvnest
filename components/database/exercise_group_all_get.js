@@ -8,7 +8,7 @@ function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
       token: request.headers.authorization
     }
 
-    Joi.validate(auth, schema.exercise_group_all_get)
+    Joi.validate(auth, schema.exercise_group_all_get.requestHeader)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
@@ -57,6 +57,15 @@ function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
               })
           }
         })
+      })
+      .catch(error => {
+        console.log(error)
+
+        reject(response
+          .status(500)
+          .send({
+            message: `Exercise group list could not be fetched`
+          }))
       })
   })
 }

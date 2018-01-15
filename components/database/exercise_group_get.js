@@ -65,15 +65,15 @@ function exerciseGroupGet (request, response, tableExerciseGroups, config) {
               })
           }
         })
-        .catch(error => {
-          console.log(error)
+      })
+      .catch(error => {
+        console.log(error)
 
-          reject(response
-            .status(401)
-            .send({
-              message: `[${error.name}] ${error.details[0].message}`
-            }))
-        })
+        reject(response
+          .status(401)
+          .send({
+            message: `[${error.name}] ${error.details[0].message}`
+          }))
       })
   })
 }

@@ -142,6 +142,51 @@ const schema = {
       name: Joi.string()
     })
   },
+  exercise_group_add: {
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().keys({
+      name: Joi.string().required(),
+      description: Joi.string()
+    })
+  },
+  exercise_group_all_get: {
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    })
+  },
+  exercise_group_get: {
+    requestParams: Joi.object().keys({
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    })
+  },
+  exercise_group_delete: {
+    requestParams: Joi.object().keys({
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().keys({
+      name: Joi.string()
+    })
+  },
+  exercise_group_update: {
+    requestParams: Joi.object().keys({
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+    }),
+    requestHeader: Joi.object().keys({
+      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
+    }),
+    requestBody: Joi.object().min(1).keys({
+      name: Joi.string(),
+      description: Joi.string()
+    })
+  },
   token_refresh: {
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()

@@ -1,4 +1,5 @@
 const passport = require(`passport`)
+const jwt = require(`jsonwebtoken`)
 const userRegistration = require(`../database/user_registration`)
 const userUpdate = require(`../database/user_update`)
 const userProfileGet = require(`../database/user_profile_get`)
@@ -13,12 +14,19 @@ const exerciseAllGet = require(`../database/exercise_all_get`)
 const exerciseGet = require(`../database/exercise_get`)
 const exerciseUpdate = require(`../database/exercise_update`)
 const exerciseDelete = require(`../database/exercise_delete`)
-const tokenRefresh = require(`../authentication/token_refresh`)
-const jwt = require(`jsonwebtoken`)
 
+const exerciseGroupAdd = require(`../database/exercise_group_add`)
+const exerciseGroupAllGet = require(`../database/exercise_group_all_get`)
+const exerciseGroupGet = require(`../database/exercise_group_get`)
+const exerciseGroupUpdate = require(`../database/exercise_group_update`)
+const exerciseGroupDelete = require(`../database/exercise_group_delete`)
+const exerciseGroupExerciseAdd = require(`../database/exercise_group_exercise_add`)
+const exerciseGroupExerciseDelete = require(`../database/exercise_group_exercise_delete`)
+
+const tokenRefresh = require(`../authentication/token_refresh`)
 const hashPassword = require(`../database/hash_password`)
 
-function routing (server, tableUsers, tableCustomers, tableExercises, config) {
+function routing (server, tableUsers, tableCustomers, tableExercises, tableExerciseGroups, config) {
   server.use((req, res, next) => {
     res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
     res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
@@ -209,6 +217,60 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
       })
   })
 
+  server.post(`/exercisegroup`, (req, res) => {
+    exerciseGroupAdd(req, res, tableExerciseGroups, config)
+      .then(() => {
+        console.log(`[STATUS] ExerciseGroup added`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
+  server.get(`/exercisegroup`, (req, res) => {
+     exerciseGroupAllGet(req, res, tableExerciseGroups, config)
+      .then(() => {
+        console.log(`[STATUS] ExerciseGroups gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+
+  })
+
+  server.get(`/exercisegroup/:exerciseGroupId`, (req, res) => {
+     exerciseGroupGet(req, res, tableExerciseGroups, config)
+      .then(() => {
+        console.log(`[STATUS] ExerciseGroup gathered`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
+  server.put(`/exercisegroup/:exerciseGroupId`, (req, res) => {
+     exerciseGroupUpdate(req, res, tableExerciseGroups, config)
+      .then(() => {
+        console.log(`[STATUS] ExerciseGroup updated`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
+  server.delete(`/exercisegroup/:exerciseGroupId`, (req, res) => {
+     exerciseGroupDelete(req, res, tableExerciseGroups, config)
+      .then(() => {
+        console.log(`[STATUS] ExerciseGroup deleted`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
+
+  //server.put(`/exercisegroup/:exerciseGroupId/:exerciseId`, (req, res) => {})
+  //server.delete(`/exercisegroup/:exerciseGroupId/:exerciseId`, (req, res) => {})
+
   server.put(`/reauthenticate`, (req, res) => {
     tokenRefresh(req, res, config)
       .then(() => {
@@ -224,6 +286,7 @@ function routing (server, tableUsers, tableCustomers, tableExercises, config) {
     tableUsers.sync({force: true})
     tableCustomers.sync({force: true})
     tableExercises.sync({force: true})
+    tableExerciseGroups.sync({force: true})
    .then(() => {
      res.send(`db reset`)
      res.end()

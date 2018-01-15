@@ -18,6 +18,7 @@ const db = initDb(config)
 const Users = tables.Users(db)
 const Customers = tables.Customers(db)
 const Exercises = tables.Exercises(db)
+const ExerciseGroups = tables.ExerciseGroups(db)
 
 initLoginStrategy(Users)
 
@@ -28,6 +29,6 @@ server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(passport.initialize())
 
-initRouting(server, Users, Customers, Exercises, config)
+initRouting(server, Users, Customers, Exercises, ExerciseGroups, config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
