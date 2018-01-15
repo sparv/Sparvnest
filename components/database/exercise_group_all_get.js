@@ -2,13 +2,13 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../routing/schemavalidation_request`)
 
-function exerciseAllGet (request, response, tableExercises, config) {
+function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
     }
 
-    Joi.validate(auth, schema.exercise_all_get.requestHeader)
+    Joi.validate(auth, schema.exercise_group_all_get)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
@@ -30,21 +30,20 @@ function exerciseAllGet (request, response, tableExercises, config) {
                 }))
             }
           } else {
-            tableExercises.findAll()
-              .then(exercises => {
-                const exerciseList = exercises.map(exercise => {
+            tableExerciseGroups.findAll()
+              .then(exerciseGroups => {
+                const exerciseGroupsList = exerciseGroups.map(group => {
                   return {
-                    exercise_id: exercise.exercise_id,
-                    name: exercise.name,
-                    level: exercise.level,
-                    description: exercise.description
+                    exercisegroup_id: group.exercisegroup_id,
+                    name: group.name,
+                    description: group.description
                   }
                 })
 
                 resolve(response
                   .status(200)
                   .send({
-                    exercise_list: exerciseList
+                    exercise_groups_list: exerciseGroupsList
                   }))
               })
               .catch(error => {
@@ -53,7 +52,7 @@ function exerciseAllGet (request, response, tableExercises, config) {
                 reject(response
                   .status(500)
                   .send({
-                    message: `Exerciselist could not be fetched`
+                    message: `Exercise group list could not be fetched`
                   }))
               })
           }
@@ -62,4 +61,4 @@ function exerciseAllGet (request, response, tableExercises, config) {
   })
 }
 
-module.exports = exerciseAllGet
+module.exports = exerciseGroupAllGet

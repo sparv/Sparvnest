@@ -2,13 +2,13 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../routing/schemavalidation_request`)
 
-function exerciseAdd (request, response, tableExercise, config) {
+function exerciseGroupAdd (request, response, tableExerciseGroup, config) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
     }
 
-    Joi.validate(auth, schema.exercise_add.requestHeader)
+    Joi.validate(auth, schema.exercise_group_add.requestHeader)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
@@ -30,38 +30,36 @@ function exerciseAdd (request, response, tableExercise, config) {
                 }))
             }
           } else {
-            Joi.validate(request.body, schema.exercise_add.requestBody)
+            Joi.validate(request.body, schema.exercise_group_add.requestBody)
               .then(() => {
-                tableExercise.findOne({ where: {
-                  name: request.body.name,
-                  level: request.body.level
+                tableExerciseGroup.findOne({ where: {
+                  name: request.body.name
                 } })
-                  .then(exercise => {
-                    if (exercise) {
+                  .then(exerciseGroup => {
+                    if (exerciseGroup) {
                       reject(response
                         .status(400)
                         .send({
-                          message: `exercise already exists`
+                          message: `exercise group already exists`
                         }))
                     } else {
                       const data = request.body
 
-                      tableExercise.create({
+                      tableExerciseGroup.create({
                         name: data.name,
-                        level: data.level,
-                        description: data.description
+                        description: data.description,
+                        exercises: []
                       })
-                        .then(exercise => {
-                          //TODO evt Prüfung ob exercise valides Objekt ist oder undefined bzw. invalide
+                        //TODO evt Prüfung ob createdExerciseGroup valides Objekt ist oder undefined bzw. invalide
+                        .then(createdExerciseGroup => {
                           resolve(response
                             .status(200)
                             .send({
-                              message: `[STATUS] Exercise added`,
-                              exercise: {
-                                exercise_id: exercise.exercise_id,
-                                name: exercise.name,
-                                level: exercise.level,
-                                description: exercise.description
+                              message: `[STATUS] Exercise group added`,
+                              exerciseGroup: {
+                                name: createdExerciseGroup.name,
+                                description: createdExerciseGroup.description,
+                                exercises: createdExerciseGroup.exercises
                               }
                             }))
                         })
@@ -77,19 +75,10 @@ function exerciseAdd (request, response, tableExercise, config) {
                     }
                   })
               })
-              .catch((error) => {
-                console.log(error)
-
-                reject(response
-                  .status(500)
-                  .send({
-                    message: `[ERROR] Response body object validation failed`
-                  }))
-              })
           }
         })
       })
   })
 }
 
-module.exports = exerciseAdd
+module.exports = exerciseGroupAdd

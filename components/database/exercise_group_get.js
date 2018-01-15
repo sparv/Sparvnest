@@ -2,13 +2,13 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../routing/schemavalidation_request`)
 
-function exerciseGet (request, response, tableExercise, config) {
+function exerciseGroupGet (request, response, tableExerciseGroups, config) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
     }
 
-    Joi.validate(auth, schema.exercise_get.requestHeader)
+    Joi.validate(auth, schema.exercise_group_get.requestHeader)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
@@ -30,53 +30,52 @@ function exerciseGet (request, response, tableExercise, config) {
                 }))
             }
           } else {
-            const exerciseId = request.params.exerciseId
+            const exerciseGroupId = request.params.exerciseGroupId
 
-            Joi.validate({exercise_id: exerciseId}, schema.exercise_get.requestParams)
+            Joi.validate({exercisegroup_id: exerciseGroupId}, schema.exercise_group_get.requestParams)
               .then(() => {
-                tableExercise.findOne({ where: {
-                  exercise_id: exerciseId
+                tableExerciseGroups.findOne({ where: {
+                  exercisegroup_id: exerciseGroupId
                 } })
-                  .then(exercise => {
-                    if (exercise === null) {
+                  .then(exerciseGroup => {
+                    if (exerciseGroup === null) {
                       reject(response
                         .status(404)
                         .send({
-                          message: `Exercise not found`
+                          message: `Exercisegroup not found`
                         }))
                     } else {
                       resolve(response
                         .status(200)
                         .send({
-                          exercise_id: exercise.exercise_id,
-                          name: exercise.name,
-                          level: exercise.level,
-                          description: exercise.description
+                          exercisegroup_id: exerciseGroup.exercisegroup_id,
+                          name: exerciseGroup.name,
+                          description: exerciseGroup.description
                         }))
                     }
                   })
-              })
-              .catch(error => {
-                console.log(error)
-                reject(response
-                  .status(500)
-                  .send({
-                    message: `[${error.name}] ${error.details[0].message}`
-                  }))
+                  .catch(error => {
+                    console.log(error)
+                    reject(response
+                      .status(500)
+                      .send({
+                        message: `[${error.name}] ${error.details[0].message}`
+                      }))
+                  })
               })
           }
         })
-      })
-      .catch(error => {
-        console.log(error)
+        .catch(error => {
+          console.log(error)
 
-        reject(response
-          .status(401)
-          .send({
-            message: `[${error.name}] ${error.details[0].message}`
-          }))
+          reject(response
+            .status(401)
+            .send({
+              message: `[${error.name}] ${error.details[0].message}`
+            }))
+        })
       })
   })
 }
 
-module.exports = exerciseGet
+module.exports = exerciseGroupGet
