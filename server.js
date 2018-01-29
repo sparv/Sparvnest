@@ -8,6 +8,11 @@ const initDb = require(`${__dirname}/components/database/init`)
 const tables = require(`${__dirname}/components/database/tables`)
 const initLoginStrategy = require(`${__dirname}/components/authentication/login`)
 const initRouting = require(`${__dirname}/components/routing/routes`)
+const User = require(`./models/User`)
+const Customer = require(`./models/Customer`)
+const Exercise = require(`./models/Exercise`)
+const ExerciseGroup = require(`./models/ExerciseGroup`)
+const ExerciseMap = require(`./models/ExerciseMap`)
 
 const config = require(`./config.json`)
 
@@ -15,16 +20,11 @@ const server = express()
 
 // DATABASE CONFIGURATION
 const db = initDb(config)
-const Users = tables.Users(db)
-const Customers = tables.Customers(db)
-const Exercises = tables.Exercises(db)
-const ExerciseGroups = tables.ExerciseGroups(db)
-const ExerciseMap = tables.ExerciseMap(db)
 
-Exercises.belongsToMany(ExerciseGroups, { through: 'exercisemap' })
-ExerciseGroups.belongsToMany(Exercises, { through: 'exercisemap' })
+Exercise(db).belongsToMany(ExerciseGroup(db), { through: 'exercisemap' })
+ExerciseGroup(db).belongsToMany(Exercise(db), { through: 'exercisemap' })
 
-initLoginStrategy(Users)
+initLoginStrategy(User(db))
 
 // FORM TEST
 server.use(express.static(path.join(__dirname, `html`)))
@@ -33,6 +33,6 @@ server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(passport.initialize())
 
-initRouting(server, Users, Customers, Exercises, ExerciseGroups, ExerciseMap, config)
+initRouting(server, User(db), Customers, Exercise(db), ExerciseGroup(db), ExerciseMap(db), config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
