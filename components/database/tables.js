@@ -100,6 +100,11 @@ const tables = {
     })
 
     return schemaExerciseGroups
+  },
+  ExerciseMap: function (db) {
+    const schemaExerciseMap = db.define(`exercisemap`, {})
+
+    return schemaExerciseMap
   }
 }
 

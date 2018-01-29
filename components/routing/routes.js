@@ -26,7 +26,7 @@ const exerciseGroupExerciseDelete = require(`../database/exercise_group_exercise
 const tokenRefresh = require(`../authentication/token_refresh`)
 const hashPassword = require(`../database/hash_password`)
 
-function routing (server, tableUsers, tableCustomers, tableExercises, tableExerciseGroups, config) {
+function routing (server, tableUsers, tableCustomers, tableExercises, tableExerciseGroups, tableExerciseMap, config) {
   server.use((req, res, next) => {
     res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
     res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
@@ -268,7 +268,15 @@ function routing (server, tableUsers, tableCustomers, tableExercises, tableExerc
       })
   })
 
-  //server.put(`/exercisegroup/:exerciseGroupId/:exerciseId`, (req, res) => {})
+  server.post(`/exercisegroup/:exerciseGroupId/:exerciseId`, (req, res) => {
+     exerciseGroupExerciseAdd(req, res, tableExerciseGroups, tableExercises, config)
+      .then(() => {
+        console.log(`[STATUS] Exercise added to ExerciseGroup`)
+      })
+      .catch(error => {
+        console.log(`[ERROR ${error.statusCode}]`)
+      })
+  })
   //server.delete(`/exercisegroup/:exerciseGroupId/:exerciseId`, (req, res) => {})
 
   server.put(`/reauthenticate`, (req, res) => {
@@ -287,10 +295,13 @@ function routing (server, tableUsers, tableCustomers, tableExercises, tableExerc
     tableCustomers.sync({force: true})
     tableExercises.sync({force: true})
     tableExerciseGroups.sync({force: true})
-   .then(() => {
-     res.send(`db reset`)
-     res.end()
-   })
+    .then(() => {
+      tableExerciseMap.sync({force: true})
+    })
+    .then(() => {
+      res.send(`db reset`)
+      res.end()
+    })
   })
 }
 

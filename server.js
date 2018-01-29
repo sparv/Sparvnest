@@ -19,6 +19,10 @@ const Users = tables.Users(db)
 const Customers = tables.Customers(db)
 const Exercises = tables.Exercises(db)
 const ExerciseGroups = tables.ExerciseGroups(db)
+const ExerciseMap = tables.ExerciseMap(db)
+
+Exercises.belongsToMany(ExerciseGroups, { through: 'exercisemap' })
+ExerciseGroups.belongsToMany(Exercises, { through: 'exercisemap' })
 
 initLoginStrategy(Users)
 
@@ -29,6 +33,6 @@ server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(passport.initialize())
 
-initRouting(server, Users, Customers, Exercises, ExerciseGroups, config)
+initRouting(server, Users, Customers, Exercises, ExerciseGroups, ExerciseMap, config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))
