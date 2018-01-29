@@ -1,6 +1,7 @@
 const sequelize = require(`sequelize`)
+const db = require(`../server/initDatabase`)
 
-const User = (db) => {
+const User = () => {
     const schema = db.define(`users`, {
       relation_id: {
         type: sequelize.UUID,

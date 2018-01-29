@@ -1,6 +1,7 @@
 const sequelize = require(`sequelize`)
+const db = require(`../server/initDatabase`)
 
-const ExerciseMap = (db) => {
+const ExerciseMap = () => {
   const schema = db.define(`exercisemap`, {})
 
   return schema

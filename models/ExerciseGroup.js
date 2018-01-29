@@ -1,6 +1,7 @@
 const sequelize = require(`sequelize`)
+const db = require(`../server/initDatabase`)
 
-const ExerciseGroup = (db) => {
+const ExerciseGroup = () => {
   const schema = db.define(`exercisegroups`, {
     exercisegroup_id: {
       type: sequelize.UUID,

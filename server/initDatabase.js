@@ -1,7 +1,8 @@
-const Sequelize = require(`sequelize`)
+const sequelize = require(`sequelize`)
+const config = require(`./config.json`)
 
-function initializeDatabase (config) {
-  const db = new Sequelize(config.db.database, config.db.user, config.db.pass, {
+const initializeDatabase = (config) => {
+  const db = new sequelize(config.db.database, config.db.user, config.db.pass, {
     host: config.db.host,
     dialect: `postgres`,
     logging: false,

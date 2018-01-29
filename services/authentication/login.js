@@ -2,13 +2,15 @@ const passport = require(`passport`)
 const LocalStrategy = require(`passport-local`).Strategy
 const crypto = require(`crypto`)
 
-function login (dbTable) {
+const User = require(`../../models/User`)
+
+const login = () => {
   passport.use(`login`, new LocalStrategy({
     passReqToCallback: true,
     usernameField: `email`
   },
   function (req, username, password, done) {
-    dbTable.findOne({ where: { email: decodeURIComponent(username) } })
+    User.findOne({ where: { email: decodeURIComponent(username) } })
     .then((user) => {
       if (user == null) {
         return done(null, false)

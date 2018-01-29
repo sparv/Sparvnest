@@ -1,6 +1,7 @@
 const sequelize = require(`sequelize`)
+const db = require(`../server/initDatabase`)
 
-const Customer = (db) => {
+const Customer = () => {
   const schema = db.define(`customers`, {
     email: {
       type: sequelize.STRING,
