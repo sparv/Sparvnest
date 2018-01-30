@@ -4,6 +4,9 @@ const express = require(`express`)
 const router = express.Router()
 
 const tokenRefresh = require(`../lib/helper/token_refresh`)
+const initLoginStrategy = require(`../services/authentication/login`)
+
+initLoginStrategy()
 
 router.post(`/`, (req, res) => {
   passport.authenticate(`login`, (err, user, info) => {
