@@ -17,3 +17,5 @@ const ExerciseGroup = () => {
 
   return schema
 }
+
+module.exports = ExerciseGroup()

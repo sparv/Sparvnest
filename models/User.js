@@ -30,4 +30,4 @@ const User = () => {
     return schema
 }
 
-module.exports = User
+module.exports = User()

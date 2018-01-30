@@ -39,4 +39,4 @@ const Customer = () => {
   return schema
 }
 
-module.exports = Customer
+module.exports = Customer()

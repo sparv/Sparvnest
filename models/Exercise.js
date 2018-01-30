@@ -21,4 +21,4 @@ const Exercise = () => {
   return schema
 }
 
-module.exports = Exercise
+module.exports = Exercise()

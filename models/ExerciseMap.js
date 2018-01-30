@@ -7,4 +7,4 @@ const ExerciseMap = () => {
   return schema
 }
 
-module.exports = ExerciseMap
+module.exports = ExerciseMap()

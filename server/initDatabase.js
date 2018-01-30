@@ -1,7 +1,7 @@
 const sequelize = require(`sequelize`)
 const config = require(`./config.json`)
 
-const initializeDatabase = (config) => {
+const initializeDatabase = () => {
   const db = new sequelize(config.db.database, config.db.user, config.db.pass, {
     host: config.db.host,
     dialect: `postgres`,
@@ -21,4 +21,4 @@ const initializeDatabase = (config) => {
   return db
 }
 
-module.exports = initializeDatabase
+module.exports = initializeDatabase()
