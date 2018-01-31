@@ -2,9 +2,9 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const Customer = require(`../../models/Customer`)
+const config = require(`../../server/config`)
 
-function customerUpdate (request, response, Customer, config) {
+function customerUpdate (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization

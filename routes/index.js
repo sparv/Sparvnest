@@ -3,7 +3,8 @@ const routes = (server) => {
     authentication: require(`./authentication`),
     customers: require(`./customers`),
     exercisegroups: require(`./exercisegroups`),
-    users: require(`./users`)
+    users: require(`./users`),
+    reset: require(`./reset`)
   }
 
   Object.keys(endpoints).forEach(endpoint => {

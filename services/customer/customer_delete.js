@@ -2,9 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const Customer = require(`../../models/Customer`)
+const customerDelete = require(`../../lib/customer/customerDelete`)
 
-function customerDelete (request, response, Customer, config) {
+const config = require(`../../server/config`)
+
+function deleteCustomerFromDatabase (request, response, Customer) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -38,28 +40,23 @@ function customerDelete (request, response, Customer, config) {
               .then(() => {
                 Joi.validate(request.body, schema.customer_delete.requestBody)
                 .then(() => {
-                  Customer.destroy({ where: {
-                    customer_id: request.params.customerId,
-                    relation_id: verification.relation_id,
-                    surname: request.body.surname
-                  } })
-                    .then((affectedRows) => {
-                      if (affectedRows === 0) {
-                        reject(response
-                          .status(400)
-                          .send({
-                            message: `No Customer deleted`
-                          }))
-                      } else {
-                        resolve(response
-                          .status(200)
-                          .send({
-                            message: `Customer deleted`
-                          }))
-                      }
+                  customerDelete(verification.relation_id, request.params.customerId, request.body.surname)
+                    .then(info => {
+                      response
+                        .status(info.status)
+                        .send({
+                          message: info.message
+                        })
+                    })
+                    .catch(info => {
+                      response
+                        .status(info.status)
+                        .send({
+                          message: info.message
+                        })
                     })
                 })
-                .catch((error) => {
+                .catch(error => {
                   console.log(error)
 
                   reject(response
@@ -81,7 +78,8 @@ function customerDelete (request, response, Customer, config) {
           }
         })
       })
+      .catch(error => console.error(error))
   })
 }
 
-module.exports = customerDelete
+module.exports = deleteCustomerFromDatabase

@@ -1,10 +1,10 @@
 const express = require(`express`)
 const router = express.Router()
 
-const userRegistration = require(`../lib/user/user_registration`)
-const userProfileGet = require(`../lib/user/user_profile_get`)
-const userUpdate = require(`../lib/user/user_update`)
-const userDelete = require(`../lib/user/user_delete`)
+const userRegistration = require(`../services/user/user_registration`)
+const userProfileGet = require(`../services/user/user_profile_get`)
+const userUpdate = require(`../services/user/user_update`)
+const userDelete = require(`../services/user/user_delete`)
 
 const config = require(`../server/config`)
 
@@ -31,6 +31,5 @@ router.delete(`/`, (req, res) => {
     .then(() => console.log(`[STATUS] User profile gathered`))
     .catch(error => console.error(`[ERROR ${error.statusCode}]`))
 })
-
 
 module.exports = router

@@ -6,9 +6,11 @@ const router = express.Router()
 const tokenRefresh = require(`../lib/helper/token_refresh`)
 const initLoginStrategy = require(`../services/authentication/login`)
 
+const config = require(`../server/config`)
+
 initLoginStrategy()
 
-router.post(`/`, (req, res) => {
+router.post(`/`, (req, res, next) => {
   passport.authenticate(`login`, (err, user, info) => {
     if (err) {
       return res

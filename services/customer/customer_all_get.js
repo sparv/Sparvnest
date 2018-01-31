@@ -2,9 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const Customer = require(`../../models/Customer`)
+const customerGetAll = require(`../../lib/customer/customerGetAll`)
 
-function customerAllGet (request, response, Customer, config) {
+const config = require(`../../server/config`)
+
+function getCompleteCustomerList (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -32,32 +34,16 @@ function customerAllGet (request, response, Customer, config) {
                 }))
             }
           } else {
-            Customer.findAll({ where: { relation_id: verification.relation_id } })
-              .then((users) => {
-                const customerList = users.map((user) => {
-                  return {
-                    customer_id: user.customer_id,
-                    forename: user.forename,
-                    surname: user.surname,
-                    phone: user.phone,
-                    email: user.email
-                  }
-                })
-
-                resolve(response
-                  .status(200)
-                  .send({
-                    customer_list: customerList
-                  }))
+            customerGetAll(verification.relation_id)
+              .then(info => {
+                response
+                  .status(info.status)
+                  .send({ customer_list: info.customer_list })
               })
-              .catch((err) => {
-                if (err) console.log(err)
-
-                reject(response
-                  .status(500)
-                  .send({
-                    message: `Internal server error`
-                  }))
+              .catch(info => {
+                response
+                  .status(info.status)
+                  .send({ message: info.message })
               })
           }
         })
@@ -72,4 +58,4 @@ function customerAllGet (request, response, Customer, config) {
   })
 }
 
-module.exports = customerAllGet
+module.exports = getCompleteCustomerList

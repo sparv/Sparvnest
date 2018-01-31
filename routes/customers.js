@@ -1,11 +1,13 @@
 const express = require(`express`)
 const router = express.Router()
 
-const customerAllGet = require(`../lib/customer/customer_all_get`)
-const customerGet = require(`../lib/customer/customer_get`)
-const customerAdd = require(`../lib/customer/customer_add`)
-const customerUpdate = require(`../lib/customer/customer_update`)
-const customerDelete = require(`../lib/customer/customer_delete`)
+const customerAllGet = require(`../services/customer/customer_all_get`)
+const customerGet = require(`../services/customer/customer_get`)
+const customerAdd = require(`../services/customer/customer_add`)
+const customerUpdate = require(`../services/customer/customer_update`)
+const customerDelete = require(`../services/customer/customer_delete`)
+
+const config = require(`../server/config`)
 
 router.get(`/`, (req, res) => {
   customerAllGet(req, res, config)

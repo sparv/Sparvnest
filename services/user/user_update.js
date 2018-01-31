@@ -1,10 +1,15 @@
-const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
+const jwt = require(`jsonwebtoken`)
 
-const hashPassword = require(`../helper/hash_password`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function userUpdate (request, response, tableUsers, config) {
+const userGet = require(`../../lib/user/userGet`)
+const userUpdate = require(`../../lib/user/userUpdate`)
+const hashPassword = require(`../../lib/helper/hash_password`)
+
+const config = require(`../../server/config`)
+
+function updatingUserData (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -56,56 +61,28 @@ function userUpdate (request, response, tableUsers, config) {
                 if (data.surname !== null) updateData[`surname`] = data.surname
                 if (data.email !== null) updateData[`email`] = data.email
 
-                tableUsers.findOne({ where: { email: updateData.email } })
-                  .then(user => {
-                    if (user !== null) {
-                      reject(response
-                        .status(400)
-                        .send({
-                          message: `This email adress is already asociated with an user account`
-                        }))
-                    }
+                userUpdate(verification.relation_id, updateData)
+                  .then(info => {
+                    userGet(verification.relation_id)
+                      .then(info => {
+                        const token = jwt.sign({
+                          sub: `user_authentication`,
+                          name: info.user.email,
+                          relation_id: info.user.relation_id
+                        }, config.auth.secret)
 
-                    tableUsers.update(updateData, { where: { relation_id: verification.relation_id } })
-                      .then((affectedRows) => {
-                        tableUsers.findOne({ where: { relation_id: verification.relation_id }})
-                        .then(user => {
-                          if (user === null) {
-                            reject(response
-                              .status(400)
-                              .send({
-                                message: `updated user could not be found`
-                              }))
-                          }
-
-                          const token = jwt.sign({
-                            sub: `user_authentication`,
-                            name: user.email,
-                            relation_id: user.relation_id
-                          }, config.auth.secret)
-
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `User data was updated`,
-                              token: token
-                            }))
-                        })
-                      })
-                      .catch(() => {
-                        reject(response
-                          .status(500)
+                        response
+                          .status(info.status)
                           .send({
-                            message: `Database Error - User was not updated`
-                          }))
+                            message: info.message,
+                            token: token
+                          })
                       })
                   })
-                  .catch(() => {
-                    reject(response
-                      .status(500)
-                      .send({
-                        message: `Database Error - User was not updated`
-                      }))
+                  .catch(info => {
+                    response
+                      .status(info.status)
+                      .send(info.message)
                   })
               })
               .catch((error) => {
@@ -120,22 +97,20 @@ function userUpdate (request, response, tableUsers, config) {
 
             Joi.validate(data, schema.user_update.requestBody.security)
               .then(() => {
-                tableUsers.findOne({ where: { relation_id: verification.relation_id } })
-                  .then(user => {
+                userGet(verification.relation_id)
+                  .then(info => {
                     const password = {
-                      old: hashPassword(data.password_old, user.salt),
-                      new: hashPassword(data.password_new, user.salt)
+                      old: hashPassword(data.password_old, info.user.salt),
+                      new: hashPassword(data.password_new, info.user.salt)
                     }
 
-                    if (user.password === password.old) {
-                      tableUsers.update({ password: password.new }, {
-                        where: { email: user.email }
-                      })
+                    if (info.user.password === password.old) {
+                      userUpdate(verification.relation_id, { password: password.new })
                         .then(() => {
                           const token = jwt.sign({
                             sub: `user_autentication`,
-                            name: user.email,
-                            relation_id: user.relation_id
+                            name: info.user.email,
+                            relation_id: info.user.relation_id
                           }, config.auth.secret)
 
                           resolve(response
@@ -153,7 +128,9 @@ function userUpdate (request, response, tableUsers, config) {
                         }))
                     }
                   })
-                  .catch(() => {
+                  .catch(error => {
+                    console.error(error)
+
                     reject(response
                       .status(500)
                       .send({
@@ -161,8 +138,8 @@ function userUpdate (request, response, tableUsers, config) {
                       }))
                   })
               })
-              .catch((error) => {
-                console.log(error)
+              .catch(error => {
+                console.error(error)
 
                 reject(response
                   .status(400)
@@ -173,8 +150,8 @@ function userUpdate (request, response, tableUsers, config) {
           }
         })
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(error => {
+        console.error(error)
 
         reject(response
           .status(401)
@@ -185,4 +162,4 @@ function userUpdate (request, response, tableUsers, config) {
   })
 }
 
-module.exports = userUpdate
+module.exports = updatingUserData

@@ -2,7 +2,7 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const tableUsers = require(`../../models/User`)
+const userGet = require(`../../lib/user/userGet`)
 
 function userProfileGet (request, response, config) {
   return new Promise((resolve, reject) => {
@@ -10,15 +10,13 @@ function userProfileGet (request, response, config) {
       token: request.headers.authorization
     }
 
-    console.log(auth.token)
-
     Joi.validate(auth, schema.user_profile_get.requestHeader)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
         jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
           if (error) {
-            console.log(error)
+            console.error(error)
 
             if (error.name === `TokenExpiredError`) {
               reject(response
@@ -35,30 +33,27 @@ function userProfileGet (request, response, config) {
             }
           }
 
-          tableUsers.findOne({ where: { relation_id: verification.relation_id } })
-            .then((user) => {
-              resolve(response
-                .status(200)
-                .send({
-                  email: user.email,
-                  forename: user.forename,
-                  surname: user.surname
-                }))
-            })
-            .catch((error) => {
-              console.log(error)
+          userGet(verification.relation_id)
+            .then(info => {
+              delete info.user[`password`]
+              delete info.user[`salt`]
 
-              reject(response
-                .status(500)
-                .send({
-                  message: `[ERROR] Internal server error`
-                }))
+              resolve(response
+                .status(info.status)
+                .send(info.user)
+              )
             })
+            .catch(info => {
+              reject(response
+                .status(info.status)
+                .send({ message: info.message })
+              )
+            })
+
         })
       })
-      .catch((error) => {
-        console.log(`[ERROR] Authentication Token is invalid`)
-        console.log(error)
+      .catch(error => {
+        console.error(error)
 
         reject(response
           .status(401)
