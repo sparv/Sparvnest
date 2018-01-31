@@ -2,7 +2,9 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseUpdate (request, response, tableExercise, config) {
+const config = require(`../../server/config`)
+
+function updateExerciseInDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -105,4 +107,4 @@ function exerciseUpdate (request, response, tableExercise, config) {
   })
 }
 
-module.exports = exerciseUpdate
+module.exports = updateExerciseInDatabase

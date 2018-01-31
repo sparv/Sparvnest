@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseDelete (request, response, tableExercise, config) {
+const exerciseDelete = require(`../../lib/exercise/exerciseDelete`)
+
+const config = require(`../../server/config`)
+
+function deleteExerciseFromDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -36,26 +40,12 @@ function exerciseDelete (request, response, tableExercise, config) {
               .then(() => {
                 Joi.validate(request.body, schema.exercise_delete.requestBody)
                   .then(() => {
-                    tableExercise.destroy({
-                      where: {
-                        exercise_id: exerciseId,
-                        name: request.body.name
-                      }
-                    })
-                      .then((affectedRows) => {
-                        if (affectedRows === 0) {
-                          reject(response
-                            .status(400)
-                            .send({
-                              message: `No Exercised deleted`
-                            }))
-                        } else {
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `Exercise deleted`
-                            }))
-                        }
+                    exerciseDelete(exerciseId)
+                      .then(info => {
+                        resolve(response
+                          .status(info.status)
+                          .send({ message: info.message })
+                        )
                       })
                   })
                   .catch(error => {
@@ -86,4 +76,4 @@ function exerciseDelete (request, response, tableExercise, config) {
   })
 }
 
-module.exports = exerciseDelete
+module.exports = deleteExerciseFromDatabase

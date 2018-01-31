@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseAllGet (request, response, tableExercises, config) {
+const exerciseGetAll = require(`../../lib/exercise/exerciseGetAll`)
+
+const config = require(`../../server/config`)
+
+function getAllExercisesFromDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -30,31 +34,18 @@ function exerciseAllGet (request, response, tableExercises, config) {
                 }))
             }
           } else {
-            tableExercises.findAll()
-              .then(exercises => {
-                const exerciseList = exercises.map(exercise => {
-                  return {
-                    exercise_id: exercise.exercise_id,
-                    name: exercise.name,
-                    level: exercise.level,
-                    description: exercise.description
-                  }
-                })
-
+            exerciseGetAll()
+              .then(info => {
                 resolve(response
-                  .status(200)
-                  .send({
-                    exercise_list: exerciseList
-                  }))
+                  .status(info.status)
+                  .send({ exercise_list: info.exercise_list })
+                )
               })
-              .catch(error => {
-                console.log(error)
-
+              .catch(info => {
                 reject(response
-                  .status(500)
-                  .send({
-                    message: `Exerciselist could not be fetched`
-                  }))
+                  .status(info.status)
+                  .send({ message: info.message })
+                )
               })
           }
         })
@@ -62,4 +53,4 @@ function exerciseAllGet (request, response, tableExercises, config) {
   })
 }
 
-module.exports = exerciseAllGet
+module.exports = getAllExercisesFromDatabase

@@ -2,9 +2,12 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
+const customerGet = require(`../../lib/customer/customerGet`)
+const customerUpdate = require(`../../lib/customer/customerUpdate`)
+
 const config = require(`../../server/config`)
 
-function customerUpdate (request, response) {
+function updateCustomerInDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -38,44 +41,31 @@ function customerUpdate (request, response) {
               .then(() => {
                 Joi.validate(request.body, schema.customer_update.requestBody)
                 .then(() => {
-                  Customer.findOne({ where: {
-                    customer_id: request.params.customerId,
-                    relation_id: verification.relation_id
-                  } })
-                    .then((customer) => {
-                      const data = request.body
-                      let updateData = {}
+                  const data = request.body
+                  let updateData = {}
 
-                      if (data.forename !== null) updateData[`forename`] = data.forename
-                      if (data.surname !== null) updateData[`surname`] = data.surname
-                      if (data.email !== null) updateData[`email`] = data.email
-                      if (data.phone !== null) updateData[`phone`] = data.phone
-                      if (data.gender !== null) updateData[`gender`] = data.gender
-                      if (data.age !== null) updateData[`age`] = data.age
-                      if (data.notes !== null) updateData[`notes`] = data.notes
+                  if (data.forename !== null) updateData[`forename`] = data.forename
+                  if (data.surname !== null) updateData[`surname`] = data.surname
+                  if (data.email !== null) updateData[`email`] = data.email
+                  if (data.phone !== null) updateData[`phone`] = data.phone
+                  if (data.gender !== null) updateData[`gender`] = data.gender
+                  if (data.age !== null) updateData[`age`] = data.age
+                  if (data.notes !== null) updateData[`notes`] = data.notes
 
-                      Customer.update(updateData, {
-                        where: { id: customer.id } })
-                        .then(() => {
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `Customer updated`
-                            }))
-                        })
+                  customerUpdate(customerId, updateData)
+                    .then(info => {
+                      resolve(response
+                        .status(info.status)
+                        .send({ message: info.message }))
                     })
-                    .catch(error => {
-                      console.error(error)
-
+                    .catch(info => {
                       reject(response
-                        .status(404)
-                        .send({
-                          message: `[Error] CustomerID not valid`
-                        }))
+                        .status(info.status)
+                        .send({ message: info.message }))
                     })
                 })
-                .catch((error) => {
-                  console.log(error)
+                .catch(error => {
+                  console.error(error)
 
                   reject(response
                     .status(401)
@@ -99,4 +89,4 @@ function customerUpdate (request, response) {
   })
 }
 
-module.exports = customerUpdate
+module.exports = updateCustomerInDatabase
