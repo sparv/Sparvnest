@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGet (request, response, tableExercise, config) {
+const exerciseGet = require(`../../lib/exercise/exerciseGet`)
+
+const config = require(`../../server/config`)
+
+function getExerciseFromDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -34,30 +38,24 @@ function exerciseGet (request, response, tableExercise, config) {
 
             Joi.validate({exercise_id: exerciseId}, schema.exercise_get.requestParams)
               .then(() => {
-                tableExercise.findOne({ where: {
-                  exercise_id: exerciseId
-                } })
-                  .then(exercise => {
-                    if (exercise === null) {
-                      reject(response
-                        .status(404)
-                        .send({
-                          message: `Exercise not found`
-                        }))
-                    } else {
-                      resolve(response
-                        .status(200)
-                        .send({
-                          exercise_id: exercise.exercise_id,
-                          name: exercise.name,
-                          level: exercise.level,
-                          description: exercise.description
-                        }))
-                    }
+                exerciseGet({exercise_id: exerciseId})
+                  .then(info => {
+                    resolve(response
+                      .status(info.status)
+                      .send({
+                        exercise: info.exercise
+                      })
+                    )
+                  })
+                  .catch(info => {
+                    reject(response
+                      .status(info.status)
+                      .send({ message: info.message })
+                    )
                   })
               })
               .catch(error => {
-                console.log(error)
+                console.error(error)
                 reject(response
                   .status(500)
                   .send({
@@ -79,4 +77,4 @@ function exerciseGet (request, response, tableExercise, config) {
   })
 }
 
-module.exports = exerciseGet
+module.exports = getExerciseFromDatabase

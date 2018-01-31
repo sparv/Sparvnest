@@ -2,7 +2,12 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseAdd (request, response, tableExercise, config) {
+const exerciseGet = require(`../../lib/exercise/exerciseGet`)
+const exerciseAdd = require(`../../lib/exercise/exerciseAdd`)
+
+const config = require(`../../server/config`)
+
+function addExerciseToDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -32,53 +37,33 @@ function exerciseAdd (request, response, tableExercise, config) {
           } else {
             Joi.validate(request.body, schema.exercise_add.requestBody)
               .then(() => {
-                tableExercise.findOne({ where: {
+                exerciseGet({
                   name: request.body.name,
                   level: request.body.level
-                } })
-                  .then(exercise => {
-                    if (exercise) {
-                      reject(response
-                        .status(400)
-                        .send({
-                          message: `exercise already exists`
-                        }))
-                    } else {
-                      const data = request.body
-
-                      tableExercise.create({
-                        name: data.name,
-                        level: data.level,
-                        description: data.description
+                })
+                  .then(() => {
+                    exerciseAdd(request.body)
+                      .then(info => {
+                        resolve(response
+                          .status(info.status)
+                          .send({ exercise: info.exercise })
+                        )
                       })
-                        .then(exercise => {
-                          //TODO evt Prüfung ob exercise valides Objekt ist oder undefined bzw. invalide
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `[STATUS] Exercise added`,
-                              exercise: {
-                                exercise_id: exercise.exercise_id,
-                                name: exercise.name,
-                                level: exercise.level,
-                                description: exercise.description
-                              }
-                            }))
-                        })
-                        .catch(error => {
-                          console.log(error)
-
-                          reject(response
-                            .status(500)
-                            .send({
-                              message: `[ERROR] Database failed to save exercise`
-                            }))
-                        })
-                    }
+                      .catch(info => {
+                        reject(response
+                          .status(info.status)
+                          .send({ message: info.message })
+                        )
+                      })
+                  })
+                  .catch(info => {
+                    reject(response
+                      .status(info.status)
+                      .send({ message: info.message }))
                   })
               })
-              .catch((error) => {
-                console.log(error)
+              .catch(error => {
+                console.error(error)
 
                 reject(response
                   .status(500)
@@ -92,4 +77,4 @@ function exerciseAdd (request, response, tableExercise, config) {
   })
 }
 
-module.exports = exerciseAdd
+module.exports = addExerciseToDatabase

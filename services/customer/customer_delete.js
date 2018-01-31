@@ -42,18 +42,20 @@ function deleteCustomerFromDatabase (request, response, Customer) {
                 .then(() => {
                   customerDelete(verification.relation_id, request.params.customerId, request.body.surname)
                     .then(info => {
-                      response
+                      resolve(response
                         .status(info.status)
                         .send({
                           message: info.message
                         })
+                      )
                     })
                     .catch(info => {
-                      response
+                      reject(response
                         .status(info.status)
                         .send({
                           message: info.message
                         })
+                      )
                     })
                 })
                 .catch(error => {

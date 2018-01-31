@@ -36,14 +36,16 @@ function getCompleteCustomerList (request, response) {
           } else {
             customerGetAll(verification.relation_id)
               .then(info => {
-                response
+                resolve(response
                   .status(info.status)
                   .send({ customer_list: info.customer_list })
+                )
               })
               .catch(info => {
-                response
+                reject(response
                   .status(info.status)
                   .send({ message: info.message })
+                )
               })
           }
         })

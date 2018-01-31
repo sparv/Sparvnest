@@ -2,13 +2,6 @@ const express = require(`express`)
 const passport = require(`passport`)
 const bodyParser = require(`body-parser`)
 
-const initRouting = require(`${__dirname}/components/routing/routes`)
-
-const User = require(`./models/User`)
-const Customer = require(`./models/Customer`)
-const Exercise = require(`./models/Exercise`)
-const ExerciseGroup = require(`./models/ExerciseGroup`)
-
 const routes = require(`./routes`)
 
 const config = require(`./server/config.json`)
@@ -26,6 +19,5 @@ server.use((req, res, next) => {
 })
 
 routes(server)
-initRouting(server, User, Customer, Exercise, ExerciseGroup, config)
 
 server.listen(config.port, () => console.log(`Running on port ${config.port}`))

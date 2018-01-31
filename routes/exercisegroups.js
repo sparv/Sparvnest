@@ -44,31 +44,32 @@ router.delete(`/:exercisegroupId`, (req, res) => {
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.get(`/:exercisegroupId/exercise`, (req, res) => {
+router.get(`/:exercisegroupId/exercises`, (req, res) => {
   exerciseAllGet(req, res, tableExercises, config)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.get(`/:exercisegroupId/exercise/:exerciseId`, (req, res) => {
+router.get(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
   exerciseGet(req, res, tableExercises, config)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.post(`/:exercisegroupId/exercise`, (req, res) => {
+router.post(`/:exercisegroupId/exercises`, (req, res) => {
+  console.log(`OUAEBFIABFNOAIWFN`)
   exerciseAdd(req, res, tableExercises, config)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.put(`/:exercisegroupId/exercise/:exerciseId`, (req, res) => {
+router.put(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
   exerciseUpdate(req, res, tableExercises, config)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.delete(`/:exercisegroupId/exercise/:exerciseId`, (req, res) => {
+router.delete(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
   exerciseDelete(req, res, tableExercises, config)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
