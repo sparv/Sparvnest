@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGroupAdd (request, response, tableExerciseGroup, config) {
+const exerciseGroupAdd = require(`../../lib/exerciseGroupAdd`)
+
+const config = require(`../../server/config`)
+
+function exerciseGroupAdd (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization

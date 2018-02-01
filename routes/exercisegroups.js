@@ -15,62 +15,62 @@ const exerciseGroupExerciseAdd = require(`../services/exercisegroup/exercise_gro
 const exerciseGroupExerciseDelete = require(`../services/exercisegroup/exercise_group_exercise_delete`)
 
 router.get(`/`, (req, res) => {
-  exerciseGroupAllGet(req, res, config)
+  exerciseGroupAllGet(req, res)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.get(`/:exercisegroupId`, (req, res) => {
-  exerciseGroupGet(req, res, config)
+  exerciseGroupGet(req, res)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.post(`/`, (req, res) => {
-  exerciseGroupAdd(req, res, config)
+  exerciseGroupAdd(req, res)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.put(`/:exercisegroupId`, (req, res) => {
-  exerciseGroupUpdate(req, res, config)
+  exerciseGroupUpdate(req, res)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.delete(`/:exercisegroupId`, (req, res) => {
-  exerciseGroupDelete(req, res, config)
+  exerciseGroupDelete(req, res)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.get(`/:exercisegroupId/exercises`, (req, res) => {
-  exerciseAllGet(req, res, tableExercises, config)
+  exerciseAllGet(req, res, tableExercises)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.get(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
-  exerciseGet(req, res, tableExercises, config)
+  exerciseGet(req, res, tableExercises)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.post(`/:exercisegroupId/exercises`, (req, res) => {
   console.log(`OUAEBFIABFNOAIWFN`)
-  exerciseAdd(req, res, tableExercises, config)
+  exerciseAdd(req, res, tableExercises)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.put(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
-  exerciseUpdate(req, res, tableExercises, config)
+  exerciseUpdate(req, res, tableExercises)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
 router.delete(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
-  exerciseDelete(req, res, tableExercises, config)
+  exerciseDelete(req, res, tableExercises)
     .then(() => console.log(`[STATUS]`))
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })

@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
+const exerciseGroupGetAll = require(`../../lib/exercisegroup/exerciseGroupGetAll`)
+
+const config = require(`../../server/config`)
+
+function exerciseGroupAllGet (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -30,24 +34,16 @@ function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
                 }))
             }
           } else {
-            tableExerciseGroups.findAll()
-              .then(exerciseGroups => {
-                const exerciseGroupsList = exerciseGroups.map(group => {
-                  return {
-                    exercisegroup_id: group.exercisegroup_id,
-                    name: group.name,
-                    description: group.description
-                  }
-                })
-
+            exerciseGroupGetAll()
+              .then(info => {
                 resolve(response
-                  .status(200)
+                  .status(info.status)
                   .send({
-                    exercise_groups_list: exerciseGroupsList
+                    exercise_groups_list: info.exercisegroup_list
                   }))
               })
               .catch(error => {
-                console.log(error)
+                console.error(error)
 
                 reject(response
                   .status(500)
@@ -59,7 +55,7 @@ function exerciseGroupAllGet (request, response, tableExerciseGroups, config) {
         })
       })
       .catch(error => {
-        console.log(error)
+        console.error(error)
 
         reject(response
           .status(500)
