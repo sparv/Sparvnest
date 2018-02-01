@@ -16,12 +16,6 @@ const ExerciseGroup = () => {
     description: {
       type: sequelize.STRING
     }
-  },{
-    classMethods: {
-      associate: function() {
-        schema.hasMany(Exercise)
-      }
-    }
   })
 
   schema.hasMany(Exercise, { as: `Items`, foreignKey: `exercisegroup_id`, sourceKey: `exercisegroup_id` })

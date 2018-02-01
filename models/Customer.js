@@ -3,6 +3,11 @@ const db = require(`../server/initDatabase`)
 
 const Customer = () => {
   const schema = db.define(`customers`, {
+    customer_id: {
+      type: sequelize.UUID,
+      defaultValue: sequelize.UUIDV4,
+      unique: true
+    },
     email: {
       type: sequelize.STRING,
       validate: {
@@ -29,10 +34,6 @@ const Customer = () => {
     },
     relation_id: {
       type: sequelize.STRING
-    },
-    customer_id: {
-      type: sequelize.UUID,
-      defaultValue: sequelize.UUIDV4
     }
   })
 
