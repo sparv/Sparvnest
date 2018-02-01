@@ -39,21 +39,28 @@ function customerValidateAndCreate (request, response, config) {
                 customerAdd(verification.relation_id, request.body)
                   .then(info => {
                     resolve(response
-                      .status(info.status)
+                      .status(200)
                       .send({
                         message: info.message,
                         customer: info.customer
                       })
                     )
                   })
-                  .catch(error => {
+                  .catch(info => {
                     reject(response
-                      .status(info.status)
+                      .status(403)
                       .send({
-                        message: info.error,
+                        message: info.message,
                       })
                     )
                   })
+              })
+              .catch(error => {
+                console.error(error)
+                reject(response
+                  .status(500)
+                  .send({ message: error })
+                )
               })
           }
         })

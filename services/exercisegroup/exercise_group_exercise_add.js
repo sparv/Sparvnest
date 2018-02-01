@@ -38,15 +38,22 @@ function exerciseGroupExerciseAdd (request, response) {
             Joi.validate({ exercisegroup_id: exercisegroupId }, schema.exercise_group_exercise_add.requestParams)
               .then(() => {
                 exerciseAdd(exercisegroupId, request.body)
-                  .then(() => {
-                    console.log(`worked`)
+                  .then(info => {
                     resolve(response
                       .status(200)
-                      .send({ message: `Exercise added` })
+                      .send({
+                        message: info.message,
+                        exercise: info.exercise
+                      })
                     )
                   })
-                  .catch(error => console.error(error))
-
+                  .catch(info => {
+                    console.error(info.message)
+                    reject(response
+                      .status(500)
+                      .send({ message: info.message })
+                    )
+                  })
               })
               .catch(error => {
                 console.log(error)

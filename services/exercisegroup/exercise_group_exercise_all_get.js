@@ -2,17 +2,17 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
+const exerciseGetAll = require(`../../lib/exercise/exerciseGetAll`)
 
 const config = require(`../../server/config`)
 
-function getExerciseGroup (request, response) {
+function getAllExercisesFromDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
     }
 
-    Joi.validate(auth, schema.exercise_group_get.requestHeader)
+    Joi.validate(auth, schema.exercise_all_get.requestHeader)
       .then(() => {
         const strippedToken = auth.token.replace(`Bearer `, ``)
 
@@ -35,42 +35,23 @@ function getExerciseGroup (request, response) {
             }
           } else {
             const { exercisegroupId } = request.params
-
-            Joi.validate({exercisegroup_id: exercisegroupId}, schema.exercise_group_get.requestParams)
-              .then(() => {
-                exerciseGroupGet(exercisegroupId)
-                  .then(info => {
-                    resolve(response
-                      .status(200)
-                      .send({ exercisegroup: info.exercisegroup })
-                    )
-                  })
-                  .catch(info => {
-                    reject(response
-                      .status(500)
-                      .send({ message: info.message })
-                    )
-                  })
+            exerciseGetAll(exercisegroupId)
+              .then(info => {
+                resolve(response
+                  .status(200)
+                  .send({ exercise_list: info.exercise_list })
+                )
               })
-              .catch(error => {
+              .catch(info => {
                 reject(response
                   .status(500)
-                  .send({ message: error })
+                  .send({ message: info.message })
                 )
               })
           }
         })
       })
-      .catch(error => {
-        console.error(error)
-
-        reject(response
-          .status(401)
-          .send({
-            message: `[${error.name}] ${error.details[0].message}`
-          }))
-      })
   })
 }
 
-module.exports = getExerciseGroup
+module.exports = getAllExercisesFromDatabase
