@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGroupExerciseAdd (request, response, tableExerciseGroups, tableExercises, config) {
+const exerciseAdd = require(`../../lib/exercise/exerciseAdd`)
+
+const config = require(`../../server/config`)
+
+function exerciseGroupExerciseAdd (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -30,35 +34,19 @@ function exerciseGroupExerciseAdd (request, response, tableExerciseGroups, table
                 }))
             }
           } else {
-            const { exerciseId, exerciseGroupId } = request.params
-            Joi.validate({exercisegroup_id: exerciseGroupId, exercise_id: exerciseId}, schema.exercise_group_exercise_add.requestParams)
+            const { exercisegroupId } = request.params
+            Joi.validate({ exercisegroup_id: exercisegroupId }, schema.exercise_group_exercise_add.requestParams)
               .then(() => {
-                tableExerciseGroups.findOne({ where: {
-                  exercisegroup_id: exerciseGroupId
-                } })
-                  .then(exerciseGroup => {
-                    tableExercises.findOne({ where: {
-                      exercise_id: exerciseId
-                    } })
-                      .then(exercise => {
-                        return exerciseGroup.addExercise(exercise)
-                      })
-                      .then(result => {
-                        if (result.length < 1) {
-                          reject(response
-                            .status(400)
-                            .send({
-                              message: `exercise already added to group`
-                            }))
-                        } else {
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `exercise added to group`
-                            }))
-                        }
-                      })
+                exerciseAdd(exercisegroupId, request.body)
+                  .then(() => {
+                    console.log(`worked`)
+                    resolve(response
+                      .status(200)
+                      .send({ message: `Exercise added` })
+                    )
                   })
+                  .catch(error => console.error(error))
+
               })
               .catch(error => {
                 console.log(error)
