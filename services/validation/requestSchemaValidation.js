@@ -170,9 +170,6 @@ const schema = {
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
-    }),
-    requestBody: Joi.object().keys({
-      name: Joi.string()
     })
   },
   exercise_group_update: {

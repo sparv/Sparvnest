@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGroupDelete (request, response, tableExerciseGroup, config) {
+const exerciseGroupDelete = require(`../../lib/exercisegroup/exerciseGroupDelete`)
+
+const config = require(`../../server/config`)
+
+function deletingExerciseGroupFromDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -30,43 +34,28 @@ function exerciseGroupDelete (request, response, tableExerciseGroup, config) {
                 }))
             }
           } else {
-            const exerciseGroupId = request.params.exerciseGroupId
+            const exerciseGroupId = request.params.exercisegroupId
+
+            console.log(exerciseGroupId)
 
             Joi.validate({exercisegroup_id: exerciseGroupId}, schema.exercise_group_delete.requestParams)
               .then(() => {
-                Joi.validate(request.body, schema.exercise_group_delete.requestBody)
-                  .then(() => {
-                    tableExerciseGroup.destroy({
-                      where: {
-                        exercisegroup_id: exerciseGroupId,
-                        name: request.body.name
-                      }
+                  exerciseGroupDelete(exerciseGroupId)
+                    .then(info => {
+                      resolve(response
+                        .status(200)
+                        .send(info)
+                      )
                     })
-                      .then((affectedRows) => {
-                        if (affectedRows === 0) {
-                          reject(response
-                            .status(400)
-                            .send({
-                              message: `No Exercise Group deleted`
-                            }))
-                        } else {
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `Exercise Group deleted`
-                            }))
-                        }
-                      })
-                  })
-                  .catch(error => {
-                    reject(response
-                      .status(400)
-                      .send({
-                        message: `Request Body not valid`
-                      }))
-                  })
+                    .catch(info => {
+                      reject(response
+                        .status(500)
+                        .send(info)
+                      )
+                    })
               })
               .catch(error => {
+                console.error(error)
                 reject(response
                   .status(400)
                   .send({
@@ -77,6 +66,7 @@ function exerciseGroupDelete (request, response, tableExerciseGroup, config) {
         })
       })
       .catch(error => {
+        console.error(error)
         reject(response
           .status(401)
           .send({
@@ -86,4 +76,4 @@ function exerciseGroupDelete (request, response, tableExerciseGroup, config) {
   })
 }
 
-module.exports = exerciseGroupDelete
+module.exports = deletingExerciseGroupFromDatabase

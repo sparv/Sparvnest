@@ -2,11 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const exerciseGroupAdd = require(`../../lib/exerciseGroupAdd`)
+const exerciseGroupAdd = require(`../../lib/exercisegroup/exerciseGroupAdd`)
 
 const config = require(`../../server/config`)
 
-function exerciseGroupAdd (request, response) {
+function addingExerciseGroupToDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -36,47 +36,27 @@ function exerciseGroupAdd (request, response) {
           } else {
             Joi.validate(request.body, schema.exercise_group_add.requestBody)
               .then(() => {
-                tableExerciseGroup.findOne({ where: {
-                  name: request.body.name
-                } })
-                  .then(exerciseGroup => {
-                    if (exerciseGroup) {
-                      reject(response
-                        .status(400)
-                        .send({
-                          message: `exercise group already exists`
-                        }))
-                    } else {
-                      const data = request.body
+                const data = request.body
 
-                      tableExerciseGroup.create({
-                        name: data.name,
-                        description: data.description,
-                        exercises: []
-                      })
-                        //TODO evt Prüfung ob createdExerciseGroup valides Objekt ist oder undefined bzw. invalide
-                        .then(createdExerciseGroup => {
-                          resolve(response
-                            .status(200)
-                            .send({
-                              message: `[STATUS] Exercise group added`,
-                              exerciseGroup: {
-                                name: createdExerciseGroup.name,
-                                description: createdExerciseGroup.description,
-                                exercises: createdExerciseGroup.exercises
-                              }
-                            }))
-                        })
-                        .catch(error => {
-                          console.log(error)
-
-                          reject(response
-                            .status(500)
-                            .send({
-                              message: `[ERROR] Database failed to save exercise`
-                            }))
-                        })
-                    }
+                exerciseGroupAdd({
+                  name: data.name,
+                  description: data.description,
+                  exercises: []
+                })
+                  .then(info => {
+                    resolve(response
+                      .status(200)
+                      .send({
+                        message: info.message,
+                        exercisegroup: info.exercisegroup
+                      }))
+                  })
+                  .catch(info => {
+                    reject(response
+                      .status(500)
+                      .send({
+                        message: info.message
+                      }))
                   })
               })
           }
@@ -85,4 +65,4 @@ function exerciseGroupAdd (request, response) {
   })
 }
 
-module.exports = exerciseGroupAdd
+module.exports = addingExerciseGroupToDatabase

@@ -2,7 +2,11 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-function exerciseGroupUpdate (request, response, tableExerciseGroup, config) {
+const exerciseGroupUpdate = require(`../../lib/exercisegroup/exerciseGroupUpdate`)
+
+const config = require(`../../server/config`)
+
+function updatingExerciseGroupInDatabase (request, response) {
   return new Promise((resolve, reject) => {
     let auth = {
       token: request.headers.authorization
@@ -30,48 +34,26 @@ function exerciseGroupUpdate (request, response, tableExerciseGroup, config) {
                 }))
             }
           } else {
-            const exerciseGroupId = request.params.exerciseGroupId
+            const exerciseGroupId = request.params.exercisegroupId
 
             Joi.validate({exercisegroup_id: exerciseGroupId}, schema.exercise_group_update.requestParams)
               .then(() => {
                 Joi.validate(request.body, schema.exercise_group_update.requestBody)
                   .then(() => {
-                    tableExerciseGroup.findOne({
-                      where: {
-                        exercisegroup_id: exerciseGroupId
-                      }
-                    })
-                      .then(exerciseGroup => {
-                        const data = request.body
-                        let updateData = {}
-
-                        if (data.name !== null) updateData[`name`] = data.name
-                        if (data.description !== null) updateData[`description`] = data.description
-
-                        tableExerciseGroup.update(updateData, {
-                          where: {
-                            exercisegroup_id: exerciseGroupId
-                          }
-                        })
-                          .then(() => {
-                            resolve(response
-                              .status(200)
-                              .send({
-                                message: `Exercise Group updated`
-                              }))
-                          })
-                          .catch(error => {
-                            console.log(error)
-                            reject(response
-                              .status(500)
-                              .send({
-                                message: `Exercise Group could not be updated by Database`
-                              }))
-                          })
+                    exerciseGroupUpdate(exerciseGroupId, request.body)
+                      .then(info => {
+                        resolve(response
+                          .status(200)
+                          .send({ message: info.message }))
+                      })
+                      .catch(info => {
+                        reject(response
+                          .status(500)
+                          .send({ message: info.message }))
                       })
                   })
                   .catch(error => {
-                    console.log(error)
+                    console.error(error)
 
                     reject(response
                       .status(500)
@@ -81,7 +63,7 @@ function exerciseGroupUpdate (request, response, tableExerciseGroup, config) {
                   })
               })
               .catch(error => {
-                console.log(error)
+                console.error(error)
 
                 reject(response
                   .status(500)
@@ -104,4 +86,4 @@ function exerciseGroupUpdate (request, response, tableExerciseGroup, config) {
   })
 }
 
-module.exports = exerciseGroupUpdate
+module.exports = updatingExerciseGroupInDatabase
