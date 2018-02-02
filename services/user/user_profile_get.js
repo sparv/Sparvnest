@@ -56,9 +56,9 @@ function userProfileGet (request, response, config) {
         console.error(error)
 
         reject(response
-          .status(401)
+          .status(403)
           .send({
-            message: `[ERROR] Authentication Token is invalid`
+            message: `[ERROR] Authentication token has no valid format`
           }))
       })
   })

@@ -26,7 +26,6 @@ router.post(`/`, (req, res, next) => {
           message: `User authentication failed - Bad credentials`
         })
     } else {
-      console.log(`asfa`)
       const jwtPayload = {
         sub: `user_authentication`,
         name: user.email,
