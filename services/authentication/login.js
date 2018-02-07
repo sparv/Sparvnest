@@ -10,7 +10,7 @@ const login = () => {
     usernameField: `email`
   },
   function (req, username, password, done) {
-    User.findOne({ where: { email: decodeURIComponent(username) } })
+    User.findOne({ where: { email: decodeURIComponent(username).toLowerCase() } })
     .then((user) => {
       if (user == null) {
         return done(null, false)
