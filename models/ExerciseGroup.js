@@ -18,8 +18,6 @@ const ExerciseGroup = () => {
     }
   })
 
-  schema.hasMany(Exercise, { as: `Items`, foreignKey: `exercisegroup_id`, sourceKey: `exercisegroup_id` })
-
   return schema
 }
 
