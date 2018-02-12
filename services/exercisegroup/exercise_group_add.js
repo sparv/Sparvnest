@@ -41,7 +41,8 @@ function addingExerciseGroupToDatabase (request, response) {
                 exerciseGroupAdd({
                   name: data.name,
                   description: data.description,
-                  exercises: []
+                  exercises: [],
+                  relation_id: verification.relation_id
                 })
                   .then(info => {
                     resolve(response

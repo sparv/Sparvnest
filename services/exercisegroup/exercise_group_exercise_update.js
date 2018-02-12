@@ -2,6 +2,7 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
+const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
 const exerciseUpdate = require(`../../lib/exercise/exerciseUpdate`)
 
 const config = require(`../../server/config`)
@@ -40,16 +41,27 @@ function updatingExerciseInDatabase (request, response) {
               .then(() => {
                 Joi.validate(request.body, schema.exercise_update.requestBody)
                   .then(() => {
-                    exerciseUpdate(exerciseId, exercisegroupId, request.body)
-                      .then(info => {
-                        resolve(response
-                          .status(200)
-                          .send({ message: info.message }))
+                    exerciseGroupGet(exercisegroupId, verification.relation_id)
+                      .then(() => {
+                        exerciseUpdate(exerciseId, exercisegroupId, request.body)
+                          .then(info => {
+                            resolve(response
+                              .status(200)
+                              .send({ message: info.message }))
+                          })
+                          .catch(info => {
+                            reject(response
+                              .status(500)
+                              .send({ message: info.message }))
+                          })
                       })
-                      .catch(info => {
+                      .catch(error => {
                         reject(response
                           .status(500)
-                          .send({ message: info.message }))
+                          .send({
+                            message: error
+                          })
+                        )
                       })
                   })
                   .catch(error => {

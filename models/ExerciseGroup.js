@@ -15,6 +15,9 @@ const ExerciseGroup = () => {
     },
     description: {
       type: sequelize.STRING
+    },
+    relation_id: {
+      type: sequelize.UUID
     }
   })
 

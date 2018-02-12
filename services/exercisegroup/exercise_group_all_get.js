@@ -34,7 +34,7 @@ function exerciseGroupAllGet (request, response) {
                 }))
             }
           } else {
-            exerciseGroupGetAll()
+            exerciseGroupGetAll(verification.relation_id)
               .then(info => {
                 resolve(response
                   .status(info.status)

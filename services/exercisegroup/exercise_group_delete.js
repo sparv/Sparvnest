@@ -40,7 +40,7 @@ function deletingExerciseGroupFromDatabase (request, response) {
 
             Joi.validate({exercisegroup_id: exerciseGroupId}, schema.exercise_group_delete.requestParams)
               .then(() => {
-                  exerciseGroupDelete(exerciseGroupId)
+                  exerciseGroupDelete(exerciseGroupId, verification.relation_id)
                     .then(info => {
                       resolve(response
                         .status(200)

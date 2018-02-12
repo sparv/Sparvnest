@@ -40,7 +40,7 @@ function updatingExerciseGroupInDatabase (request, response) {
               .then(() => {
                 Joi.validate(request.body, schema.exercise_group_update.requestBody)
                   .then(() => {
-                    exerciseGroupUpdate(exerciseGroupId, request.body)
+                    exerciseGroupUpdate(exerciseGroupId, verification.relation_id, request.body)
                       .then(info => {
                         resolve(response
                           .status(200)

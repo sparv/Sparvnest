@@ -38,7 +38,7 @@ function getExerciseGroup (request, response) {
 
             Joi.validate({exercisegroup_id: exercisegroupId}, schema.exercise_group_get.requestParams)
               .then(() => {
-                exerciseGroupGet(exercisegroupId)
+                exerciseGroupGet(exercisegroupId, verification.relation_id)
                   .then(info => {
                     resolve(response
                       .status(200)

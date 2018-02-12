@@ -2,6 +2,7 @@ const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
+const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
 const exerciseDelete = require(`../../lib/exercise/exerciseDelete`)
 
 const config = require(`../../server/config`)
@@ -37,22 +38,31 @@ function exerciseGroupExerciseDelete (request, response) {
             const { exerciseId, exercisegroupId } = request.params
             Joi.validate({exercisegroup_id: exercisegroupId, exercise_id: exerciseId}, schema.exercise_group_exercise_delete.requestParams)
               .then(() => {
-                exerciseDelete(exerciseId, exercisegroupId)
-                  .then(info => {
-                    resolve(response
-                      .status(200)
-                      .send({ message: info.message })
-                    )
+                exerciseGroupGet(exercisegroupId, verification.relation_id)
+                  .then(() => {
+                    exerciseDelete(exerciseId, exercisegroupId)
+                      .then(info => {
+                        resolve(response
+                          .status(200)
+                          .send({ message: info.message })
+                        )
+                      })
+                      .catch(info => {
+                        reject(response
+                          .status(500)
+                          .send({ message: info.message })
+                        )
+                      })
                   })
-                  .catch(info => {
+                  .catch(error => {
                     reject(response
-                      .status(500)
-                      .send({ message: info.message })
-                    )
+                      .status(404)
+                      .send({
+                        message: `group not found`
+                      }))
                   })
               })
               .catch(error => {
-                console.log(error)
                 reject(response
                   .status(500)
                   .send({
