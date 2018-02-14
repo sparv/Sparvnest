@@ -11,11 +11,6 @@ const schema = {
         surname: Joi.string().required()
       })
   },
-  user_profile_get: {
-    requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
-    })
-  },
   user_update: {
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
