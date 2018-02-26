@@ -1,79 +1,37 @@
-const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
-
-const customerAdd = require(`../../lib/customer/customerAdd`)
-const Customer = require(`../../models/Customer`)
 
 const schema = require(`../validation/requestSchemaValidation`)
 
-function customerValidateAndCreate (request, response, config) {
-  return new Promise((resolve, reject) => {
-    let auth = {
-      token: request.headers.authorization
-    }
+const validateToken = require(`../../lib/helper/validateToken`)
+const errorMap = require(`../../lib/helper/errorMap`)
 
-    Joi.validate(auth, schema.customer_add.requestHeader)
-      .then(() => {
-        const strippedToken = auth.token.replace(`Bearer `, ``)
+const customerAdd = require(`../../lib/customer/customerAdd`)
 
-        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
-          if (error) {
-            console.log(error)
+const config = require(`../../server/config`)
 
-            if (error.name === `TokenExpiredError`) {
-              reject(response
-                .status(510)
-                .send({
-                  message: `JWT token expired`
-                }))
-            } else {
-              reject(response
-                .status(401)
-                .send({
-                  message: `JWT authentication failed`
-                }))
-            }
-          } else {
-            Joi.validate(request.body, schema.customer_add.requestBody)
-              .then(() => {
-                customerAdd(verification.relation_id, request.body)
-                  .then(info => {
-                    resolve(response
-                      .status(200)
-                      .send({
-                        message: info.message,
-                        customer: info.customer
-                      })
-                    )
-                  })
-                  .catch(info => {
-                    reject(response
-                      .status(403)
-                      .send({
-                        message: info.message,
-                      })
-                    )
-                  })
-              })
-              .catch(error => {
-                console.error(error)
-                reject(response
-                  .status(500)
-                  .send({ message: error })
-                )
-              })
-          }
+function customerValidateAndCreate (request, response) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const validationToken = await validateToken(request.headers.authorization)
+      const validationBody = await Joi.validate(request.body, schema.customer_add.requestBody)
+
+      const creation = await customerAdd(validationToken.relation_id, request.body)
+
+      resolve(response
+        .status(200)
+        .send({
+          message: creation.message,
+          customer: creation.customer
         })
-      })
-      .catch((error) => {
-        console.log(error)
+      )
+    } catch (error) {
+      const mapping = errorMap(error)
 
-        reject(response
-          .status(401)
-          .send({
-            message: `Authentication failed - no/wrong authentication token`
-          }))
-      })
+      reject(response
+        .status(mapping.status)
+        .send(mapping)
+      )
+    }
   })
 }
 

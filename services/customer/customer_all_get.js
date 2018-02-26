@@ -1,62 +1,39 @@
 const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
+
 const schema = require(`../validation/requestSchemaValidation`)
+
+const validateToken = require(`../../lib/helper/validateToken`)
+const errorMap = require(`../../lib/helper/errorMap`)
 
 const customerGetAll = require(`../../lib/customer/customerGetAll`)
 
 const config = require(`../../server/config`)
 
 function getCompleteCustomerList (request, response) {
-  return new Promise((resolve, reject) => {
-    let auth = {
-      token: request.headers.authorization
-    }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const validationToken = await validateToken(request.headers.authorization)
 
-    Joi.validate(auth, schema.customer_all_get.requestHeader)
-      .then(() => {
-        const strippedToken = auth.token.replace(`Bearer `, ``)
+      const gathering = await customerGetAll(validationToken.relation_id)
 
-        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
-          if (error) {
-            console.log(error)
-
-            if (error.name === `TokenExpiredError`) {
-              reject(response
-                .status(510)
-                .send({
-                  message: `JWT token expired`
-                }))
-            } else {
-              reject(response
-                .status(401)
-                .send({
-                  message: `JWT authentication failed`
-                }))
-            }
-          } else {
-            customerGetAll(verification.relation_id)
-              .then(info => {
-                resolve(response
-                  .status(info.status)
-                  .send({ customer_list: info.customer_list })
-                )
-              })
-              .catch(info => {
-                reject(response
-                  .status(info.status)
-                  .send({ message: info.message })
-                )
-              })
-          }
+      resolve(response
+        .status(gathering.status)
+        .send({
+          message: gathering.message,
+          customer_list: gathering.customer_list
         })
-      })
-      .catch((error) => {
-        reject(response
-          .status(401)
-          .send({
-            message: `[${error.name}] ${error}`
-          }))
-      })
+      )
+
+    } catch (error) {
+      console.log(error)
+      const mapping = errorMap(error)
+
+      reject(response
+        .status(mapping.status)
+        .send(mapping)
+      )
+    }
   })
 }
 
