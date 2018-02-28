@@ -18,8 +18,8 @@ function exerciseGroupExerciseDelete (request, response) {
         exercise_id: request.params.exerciseId
       }, schema.exercise_group_exercise_delete.requestParams)
 
-      const gathering = exerciseGroupGet(request.params.exercisegroupId, validateToken.relation_id)
-      const deletion = exerciseDelete(request.params.exerciseId, request.params.exercisegroupId)
+      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const deletion = await exerciseDelete(request.params.exerciseId, request.params.exercisegroupId)
 
       resolve(response
         .status(200)

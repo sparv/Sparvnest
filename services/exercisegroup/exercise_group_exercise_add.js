@@ -13,11 +13,11 @@ function exerciseGroupExerciseAdd (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
       const validationToken = await validateToken(request.headers.authorization)
-      const validationParams = await Joi.validate(request.params.exercisegroupId, schema.exercise_group_exercise_add.requestParams)
-      const validationBody = await Joi.validate(request.body, schema.exercise_group_exercise_add.requestBody)
+      const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_exercise_add.requestParams)
+      const validationBody = await Joi.validate(request.body, schema.exercise_add.requestBody)
 
-      const gathering = exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
-      const creation = exerciseAdd(request.params.exercisegroupId, request.body)
+      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const creation = await exerciseAdd(request.params.exercisegroupId, request.body)
 
       resolve(response
         .status(200)
@@ -27,6 +27,7 @@ function exerciseGroupExerciseAdd (request, response) {
         })
       )
     } catch (error) {
+      console.log(error)
       const mapping = errorMap(error)
 
       reject(response

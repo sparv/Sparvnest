@@ -101,13 +101,17 @@ const schema = {
     })
   },
   exercise_all_get: {
+    requestParams: Joi.object().keys({
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
+    }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     })
   },
   exercise_get: {
     requestParams: Joi.object().keys({
-      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
@@ -115,7 +119,8 @@ const schema = {
   },
   exercise_update: {
     requestParams: Joi.object().keys({
-      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
+      exercise_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required(),
+      exercisegroup_id: Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
     }),
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()

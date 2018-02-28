@@ -11,7 +11,9 @@ function userRegistration (response, data) {
     try {
       const validationBody = await Joi.validate(data, schema.user_registration.requestBody)
 
-      const registration = userAdd(data)
+      const registration = await userAdd(data)
+
+      console.log(registration)
 
       resolve(response
         .status(200)

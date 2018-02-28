@@ -17,7 +17,7 @@ function updatingExerciseInDatabase (request, response) {
       const validationParams = await Joi.validate({
         exercisegroup_id: request.params.exercisegroupId,
         exercise_id: request.params.exerciseId
-      }, schema.exercise_group_exercise_update.requestParams)
+      }, schema.exercise_update.requestParams)
 
       const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
       const update = await exerciseUpdate(request.params.exerciseId, request.params.exercisegroupId, request.body)
@@ -27,6 +27,7 @@ function updatingExerciseInDatabase (request, response) {
         .send({ message: update.message })
       )
     } catch (error) {
+      console.log(error)
       const mapping = errorMap(error)
 
       reject(response

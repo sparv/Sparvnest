@@ -12,9 +12,9 @@ function getExerciseGroup (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
       const validationToken = await validateToken(request.headers.authorization)
-      const validationParams = await Joi.validate(request.params.exercisegroupId, schema.exercise_group_get.requestParams)
+      const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_get.requestParams)
 
-      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validateToken.relation_id)
+      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
 
       resolve(response
         .status(200)

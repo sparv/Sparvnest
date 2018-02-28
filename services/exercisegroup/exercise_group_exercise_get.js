@@ -13,11 +13,10 @@ function getSingleExercisesFromDatabase (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
       const validationToken = await validateToken(request.headers.authorization)
-      const validationBody = await Joi.validate(request.body, schema.exercise_group_add.requestBody)
       const validationParams = await Joi.validate({
         exercisegroup_id: request.params.exercisegroupId,
         exercise_id: request.params.exerciseId
-      }, schema.exercise_group_exercise_get.requestParams)
+      }, schema.exercise_get.requestParams)
 
       const gatheringGroup = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
       const gathering = await exerciseGet(request.params.exercisegroupId, request.params.exerciseId)
@@ -27,6 +26,7 @@ function getSingleExercisesFromDatabase (request, response) {
         .send({ exercise: gathering.exercise })
       )
     } catch (error) {
+      console.log(error)
       const mapping = errorMap(error)
 
       reject(response
