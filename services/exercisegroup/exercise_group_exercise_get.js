@@ -1,6 +1,8 @@
-const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
+
+const validateToken = require(`../../lib/helper/validateToken`)
+const errorMap = require(`../../lib/helper/errorMap`)
 
 const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
 const exerciseGet = require(`../../lib/exercise/exerciseGet`)
@@ -8,59 +10,30 @@ const exerciseGet = require(`../../lib/exercise/exerciseGet`)
 const config = require(`../../server/config`)
 
 function getSingleExercisesFromDatabase (request, response) {
-  return new Promise((resolve, reject) => {
-    let auth = {
-      token: request.headers.authorization
+  return new Promise(async (resolve, reject) => {
+    try {
+      const validationToken = await validateToken(request.headers.authorization)
+      const validationBody = await Joi.validate(request.body, schema.exercise_group_add.requestBody)
+      const validationParams = await Joi.validate({
+        exercisegroup_id: request.params.exercisegroupId,
+        exercise_id: request.params.exerciseId
+      }, schema.exercise_group_exercise_get.requestParams)
+
+      const gatheringGroup = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const gathering = await exerciseGet(request.params.exercisegroupId, request.params.exerciseId)
+
+      resolve(response
+        .status(200)
+        .send({ exercise: gathering.exercise })
+      )
+    } catch (error) {
+      const mapping = errorMap(error)
+
+      reject(response
+        .status(mapping.status)
+        .send(mapping)
+      )
     }
-
-    Joi.validate(auth, schema.exercise_get.requestHeader)
-      .then(() => {
-        const strippedToken = auth.token.replace(`Bearer `, ``)
-
-        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
-          if (error) {
-            console.log(error)
-
-            if (error.name === `TokenExpiredError`) {
-              reject(response
-                .status(510)
-                .send({
-                  message: `JWT token expired`
-                }))
-            } else {
-              reject(response
-                .status(401)
-                .send({
-                  message: `JWT authentication failed`
-                }))
-            }
-          } else {
-            const { exercisegroupId, exerciseId } = request.params
-            exerciseGroupGet(exercisegroupId, verification.relation_id)
-              .then(() => {
-                exerciseGet(exercisegroupId, exerciseId)
-                  .then(info => {
-                    resolve(response
-                      .status(200)
-                      .send({ exercise: info.exercise })
-                    )
-                  })
-                  .catch(info => {
-                    reject(response
-                      .status(500)
-                      .send({ message: info.message })
-                    )
-                  })
-              })
-              .catch(error => {
-                reject(response
-                  .status(500)
-                  .send({ message: error.message })
-                )
-              })
-          }
-        })
-      })
   })
 }
 
