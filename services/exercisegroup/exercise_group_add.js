@@ -1,68 +1,41 @@
-const jwt = require(`jsonwebtoken`)
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
+
+const validateToken = require(`../../lib/helper/validateToken`)
+const errorMap = require(`../../lib/helper/errorMap`)
 
 const exerciseGroupAdd = require(`../../lib/exercisegroup/exerciseGroupAdd`)
 
 const config = require(`../../server/config`)
 
 function addingExerciseGroupToDatabase (request, response) {
-  return new Promise((resolve, reject) => {
-    let auth = {
-      token: request.headers.authorization
-    }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const validationToken = await validateToken(request.headers.authorization)
+      const validationBody = await Joi.validate(request.body, schema.exercise_group_add.requestBody)
 
-    Joi.validate(auth, schema.exercise_group_add.requestHeader)
-      .then(() => {
-        const strippedToken = auth.token.replace(`Bearer `, ``)
-
-        jwt.verify(strippedToken, config.auth.secret, (error, verification) => {
-          if (error) {
-            console.log(error)
-
-            if (error.name === `TokenExpiredError`) {
-              reject(response
-                .status(510)
-                .send({
-                  message: `JWT token expired`
-                }))
-            } else {
-              reject(response
-                .status(401)
-                .send({
-                  message: `JWT authentication failed`
-                }))
-            }
-          } else {
-            Joi.validate(request.body, schema.exercise_group_add.requestBody)
-              .then(() => {
-                const data = request.body
-
-                exerciseGroupAdd({
-                  name: data.name,
-                  description: data.description,
-                  exercises: [],
-                  relation_id: verification.relation_id
-                })
-                  .then(info => {
-                    resolve(response
-                      .status(200)
-                      .send({
-                        message: info.message,
-                        exercisegroup: info.exercisegroup
-                      }))
-                  })
-                  .catch(info => {
-                    reject(response
-                      .status(500)
-                      .send({
-                        message: info.message
-                      }))
-                  })
-              })
-          }
-        })
+      const creation = await exerciseGroupAdd({
+        name: request.body.name,
+        description: request.body.description,
+        exercises: [],
+        relation_id: validationToken.relation_id
       })
+
+      resolve(response
+        .status(200)
+        .send({
+          message: creation.message,
+          exercisegroup: creation.exercisegroup
+        })
+      )
+    } catch (error) {
+      const mapping = errorMap(error)
+
+      reject(response
+        .status(mapping.status)
+        .send(mapping)
+      )
+    }
   })
 }
 
