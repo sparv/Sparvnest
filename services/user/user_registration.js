@@ -13,8 +13,6 @@ function userRegistration (response, data) {
 
       const registration = await userAdd(data)
 
-      console.log(registration)
-
       resolve(response
         .status(200)
         .send(registration)
