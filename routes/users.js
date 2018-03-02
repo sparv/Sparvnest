@@ -10,22 +10,22 @@ const config = require(`../server/config`)
 
 router.get(`/`, (req, res) => {
   userProfileGet(req, res, config)
-    .catch(error => console.error(`[ERROR ${error.statusCode}]`))
+    .catch(error => console.error(error.statusCode))
 })
 
 router.post(`/`, (req, res) => {
   userRegistration(res, req.body, config)
-    .catch(error => console.error(`[ERROR ${error.statusCode}]`))
+    .catch(error => console.error(error.statusCode))
 })
 
 router.put(`/`, (req, res) => {
   userUpdate(req, res, config)
-    .catch(error => console.error(`[ERROR ${error.statusCode}]`))
+    .catch(error => console.error(error.statusCode))
 })
 
 router.delete(`/`, (req, res) => {
   userDelete(req, res, config)
-    .catch(error => console.error(`[ERROR ${error.statusCode}]`))
+    .catch(error => console.error(error.statusCode))
 })
 
 module.exports = router

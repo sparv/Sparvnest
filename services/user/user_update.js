@@ -52,8 +52,14 @@ function updatingUserData (request, response) {
           new: hashPassword(data.password_new, information.user.salt)
         }
 
-        if (information.user.password !== password.old) throw Error(`Current user password not valid`)
-        const update = userUpdate(validation.relation_id, { password: password.new })
+        if (information.user.password !== password.old) {
+          const error = new Error
+          error.name = `UserCredentialsError`
+          error.message = `Current user password not valid`
+          throw error
+        }
+
+        const update = await userUpdate(validation.relation_id, { password: password.new })
 
         const token = jwt.sign({
           sub: `user_autentication`,
@@ -70,7 +76,6 @@ function updatingUserData (request, response) {
         )
       }
     } catch (error) {
-      console.log(error)
       const mapping = errorMap(error)
 
       reject(response
