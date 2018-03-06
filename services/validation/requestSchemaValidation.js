@@ -56,10 +56,10 @@ const schema = {
       forename: Joi.string().required(),
       surname: Joi.string().required(),
       email: Joi.string().email().required(),
-      phone: Joi.string(),
-      gender: Joi.string(),
-      age: Joi.string(),
-      notes: Joi.string()
+      phone: Joi.string().empty(''),
+      gender: Joi.string().empty(''),
+      age: Joi.string().empty(''),
+      notes: Joi.string().empty('')
     })
   },
   customer_update: {
@@ -70,13 +70,13 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      forename: Joi.string(),
-      surname: Joi.string(),
-      email: Joi.string().email(),
-      phone: Joi.string(),
-      gender: Joi.string(),
-      age: Joi.string(),
-      notes: Joi.string()
+      forename: Joi.string().empty(''),
+      surname: Joi.string().empty(''),
+      email: Joi.string().email().empty(''),
+      phone: Joi.string().empty(''),
+      gender: Joi.string().empty(''),
+      age: Joi.string().empty(''),
+      notes: Joi.string().empty('')
     })
   },
   customer_delete: {
@@ -97,7 +97,7 @@ const schema = {
     requestBody: Joi.object().keys({
       name: Joi.string().required(),
       level: Joi.string().required(),
-      description: Joi.string()
+      description: Joi.string().empty('')
     })
   },
   exercise_all_get: {
@@ -126,9 +126,9 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().min(1).keys({
-      name: Joi.string(),
-      level: Joi.string(),
-      description: Joi.string()
+      name: Joi.string().empty(''),
+      level: Joi.string().empty(''),
+      description: Joi.string().empty('')
     })
   },
   exercise_delete: {
@@ -139,7 +139,7 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().keys({
-      name: Joi.string()
+      name: Joi.string().empty('')
     })
   },
   exercise_group_add: {
@@ -148,7 +148,7 @@ const schema = {
     }),
     requestBody: Joi.object().keys({
       name: Joi.string().required(),
-      description: Joi.string()
+      description: Joi.string().empty('')
     })
   },
   exercise_group_all_get: {
@@ -180,8 +180,8 @@ const schema = {
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
     }),
     requestBody: Joi.object().min(1).keys({
-      name: Joi.string(),
-      description: Joi.string()
+      name: Joi.string().empty(''),
+      description: Joi.string().empty('')
     })
   },
   exercise_group_exercise_add: {
