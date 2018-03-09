@@ -25,7 +25,7 @@ function updatingUserData (request, response) {
         const data = request.body.meta
         const validationBody = await Joi.validate(data, schema.user_update.requestBody.meta)
         const update = await userUpdate(validation.relation_id, data)
-        const information = await userGet(validation.relation_id)
+        const information = await userGet(validation.email)
 
         const token = jwt.sign({
           sub: `user_authentication`,
@@ -45,7 +45,7 @@ function updatingUserData (request, response) {
       if (request.body.meta === undefined && request.body.security !== undefined) {
         const data = request.body.security
         const validationBody = await Joi.validate(data, schema.user_update.requestBody.security)
-        const information = await userGet(validation.relation_id)
+        const information = await userGet(validation.email)
 
         const password = {
           old: hashPassword(data.password_old, information.user.salt),

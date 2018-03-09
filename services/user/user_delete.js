@@ -18,7 +18,7 @@ function deleteUserFromDatabase (request, response) {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationBody = await Joi.validate(request.body, schema.user_delete.requestBody)
 
-      const information = await userGet(validationToken.relation_id)
+      const information = await userGet(validationToken.email)
       const hashedPassword = hashPassword(request.body.password, information.user.salt)
 
       if (hashedPassword !== information.user.password) {

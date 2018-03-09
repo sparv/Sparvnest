@@ -7,7 +7,7 @@ function userProfileGet (request, response, config) {
   return new Promise(async (resolve, reject) => {
     try {
       const validation = await validateAccessToken(request.headers.authorization)
-      const information = await userGet(validation.relation_id)
+      const information = await userGet(validation.email)
 
       delete information.user[`password`]
       delete information.user[`salt`]

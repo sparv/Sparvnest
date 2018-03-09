@@ -1,31 +1,36 @@
-const passport = require(`passport`)
-const LocalStrategy = require(`passport-local`).Strategy
 const crypto = require(`crypto`)
 
-const User = require(`../../models/User`)
+const getUser = require(`../../lib/user/userGet`)
+const hashPassword = require(`../../lib/helper/hash_password`)
+const generateRefreshToken = require(`../../lib/authentication/generateRefreshToken`)
 
-const login = () => {
-  passport.use(`login`, new LocalStrategy({
-    passReqToCallback: true,
-    usernameField: `email`
-  },
-  function (req, username, password, done) {
-    User.findOne({ where: { email: decodeURIComponent(username).toLowerCase() } })
-    .then((user) => {
-      if (user == null) {
-        return done(null, false)
+const login = (request, response) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { email, password } = request.body
+      const gathering = await getUser(email)
+      const hashedRequestPassword = hashPassword(password, gathering.user.salt)
+
+      const isSamePassword = gathering.user.password === hashedRequestPassword
+
+      if (isSamePassword) {
+        delete gathering.user.salt
+        delete gathering.user.password
+
+        const token = generateRefreshToken(gathering.user)
+
+        resolve(response
+          .status(200)
+          .cookie(`refresh_token`, token, { httpOnly: true })
+          .send(gathering.user)
+        )
       }
 
-      const hash = crypto.pbkdf2Sync(password, user.salt, 100000, 512, `sha512`).toString(`base64`)
-
-      if (user.password === hash) {
-        console.log(`User authenticated`)
-        return done(null, user)
-      }
-
-      return done(null, false)
-    })
-  }))
+      throw Error()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 module.exports = login
