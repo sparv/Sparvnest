@@ -1,8 +1,3 @@
-const jwt = require(`jsonwebtoken`)
-const Joi = require(`joi`)
-
-const schema = require(`../validation/requestSchemaValidation`)
-
 const validateToken = require(`../../lib/helper/validateToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 

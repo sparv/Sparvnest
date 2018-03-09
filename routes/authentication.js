@@ -1,10 +1,10 @@
 const passport = require(`passport`)
-const jwt = require(`jsonwebtoken`)
 const express = require(`express`)
 const router = express.Router()
 
 const tokenRefresh = require(`../lib/helper/token_refresh`)
 const initLoginStrategy = require(`../services/authentication/login`)
+const generateRefreshToken = require(`../lib/authentication/generateRefreshToken`)
 
 const config = require(`../server/config`)
 
@@ -26,26 +26,17 @@ router.post(`/`, (req, res, next) => {
           message: `User authentication failed - Bad credentials`
         })
     } else {
-      const jwtPayload = {
-        sub: `user_authentication`,
-        name: user.email,
-        relation_id: user.relation_id
-      }
 
-      const jwtOptions = {
-        expiresIn: config.auth.tokenExpirationTime
-      }
-
-      const token = jwt.sign(jwtPayload, config.auth.secret, jwtOptions)
+      const token = generateRefreshToken(user)
 
       return res
         .status(200)
+        .cookie(`refresh_token`, token, { httpOnly: true })
         .send({
           relation_id: user.relation_id,
           forename: user.forename,
           surname: user.surname,
-          email: user.email,
-          token: token
+          email: user.email
         })
     }
   })(req, res, next)
