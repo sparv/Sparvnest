@@ -4,7 +4,7 @@ const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
 const hashPassword = require(`../../lib/helper/hash_password`)
-const validateToken = require(`../../lib/helper/validateToken`)
+const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 
 const userGet = require(`../../lib/user/userGet`)
@@ -15,7 +15,7 @@ const config = require(`../../server/config`)
 function deleteUserFromDatabase (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
-      const validationToken = await validateToken(request.headers.authorization)
+      const validationToken = await validateAccessToken(request.headers.authorization)
       const validationBody = await Joi.validate(request.body, schema.user_delete.requestBody)
 
       const information = await userGet(validationToken.relation_id)

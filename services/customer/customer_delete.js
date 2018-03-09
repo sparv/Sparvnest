@@ -2,7 +2,7 @@ const Joi = require(`joi`)
 
 const schema = require(`../validation/requestSchemaValidation`)
 
-const validateToken = require(`../../lib/helper/validateToken`)
+const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 
 const customerDelete = require(`../../lib/customer/customerDelete`)

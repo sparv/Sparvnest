@@ -4,7 +4,7 @@ const jwt = require(`jsonwebtoken`)
 const schema = require(`../validation/requestSchemaValidation`)
 
 const hashPassword = require(`../../lib/helper/hash_password`)
-const validateToken = require(`../../lib/helper/validateToken`)
+const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 
 const userGet = require(`../../lib/user/userGet`)
@@ -15,7 +15,7 @@ const config = require(`../../server/config`)
 function updatingUserData (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
-      const validation = await validateToken(request.headers.authorization)
+      const validation = await validateAccessToken(request.headers.authorization)
 
       //TODO request body validation should be done by Joi
       if (request.body.meta === undefined && request.body.security === undefined) throw Error(`no valid property found`)

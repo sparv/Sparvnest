@@ -1,7 +1,7 @@
 const Joi = require(`joi`)
 const schema = require(`../validation/requestSchemaValidation`)
 
-const validateToken = require(`../../lib/helper/validateToken`)
+const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 
 const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
@@ -12,7 +12,7 @@ const config = require(`../../server/config`)
 function updatingExerciseInDatabase (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
-      const validationToken = await validateToken(request.headers.authorization)
+      const validationToken = await validateAccessToken(request.headers.authorization)
       const validationBody = await Joi.validate(request.body, schema.exercise_update.requestBody)
       const validationParams = await Joi.validate({
         exercisegroup_id: request.params.exercisegroupId,
