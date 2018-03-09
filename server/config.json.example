@@ -1,13 +1,20 @@
 {
-	"port": 4040, //dont change that yet
-	"db": {
-		"url": "DB_URL",
-		"port": DB_PORT,
-		"user": "postgres",
-		"pass": "",
-		"database": "DATABASE_NAME"
-	},
-	"auth": {
-		"secret": "supersecretstringneedstobechanged!!!" //just in config for development, will be changed later
-	}
+  "port": PORT,
+  "db": {
+    "url": URL,
+    "port": PORT,
+    "user": DBUSER,
+    "pass": DBPASS,
+    "database": DATABASENAME
+  },
+  "auth": {
+    "refresh_token": {
+      "secret": SECRET,
+      "expiration": "6 days"
+    },
+    "access_token": {
+      "secret": SECRET,
+      "expiration":"5m"
+    }
+  }
 }
