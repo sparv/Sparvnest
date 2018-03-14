@@ -5,6 +5,7 @@ const validateAccessToken = require(`../../lib/authentication/validateAccessToke
 const errorMap = require(`../../lib/helper/errorMap`)
 
 const exerciseGroupGet = require(`../../lib/exercisegroup/exerciseGroupGet`)
+const exerciseGetAll = require(`../../lib/exercise/exerciseGetAll`)
 
 const config = require(`../../server/config`)
 
@@ -15,10 +16,14 @@ function getExerciseGroup (request, response) {
       const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_get.requestParams)
 
       const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const exercises = await exerciseGetAll(request.params.exercisegroupId)
+
+      const group = gathering.exercisegroup
+      group[`exercises`] = exercises.exercise_list
 
       resolve(response
         .status(200)
-        .send({ exercisegroup: gathering.exercisegroup })
+        .send({ exercisegroup: group })
       )
     } catch (error) {
       const mapping = errorMap(error)
