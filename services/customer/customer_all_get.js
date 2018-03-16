@@ -15,7 +15,7 @@ function getCompleteCustomerList (request, response) {
     try {
       const validationToken = await validateAccessToken(request.headers.authorization)
 
-      const gathering = await customerGetAll(validationToken.relation_id)
+      const gathering = await customerGetAll(validationToken.user_id)
 
       resolve(response
         .status(gathering.status)

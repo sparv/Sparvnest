@@ -25,7 +25,7 @@ function deleteUserFromDatabase (request, response) {
         throw Error(`User credentials are not valid`)
       }
 
-      const deletion = await userDelete(validationToken.relation_id)
+      const deletion = await userDelete(validationToken.user_id)
 
       resolve(response
         .status(200)

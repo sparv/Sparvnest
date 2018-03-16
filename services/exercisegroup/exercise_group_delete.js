@@ -14,7 +14,7 @@ function deletingExerciseGroupFromDatabase (request, response) {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_delete.requestParams)
 
-      const deletion = await exerciseGroupDelete(request.params.exercisegroupId, validationToken.relation_id)
+      const deletion = await exerciseGroupDelete(request.params.exercisegroupId, validationToken.user_id)
 
       resolve(response
         .status(200)

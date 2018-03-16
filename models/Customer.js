@@ -32,7 +32,7 @@ const Customer = () => {
     notes: {
       type: sequelize.STRING
     },
-    relation_id: {
+    user_id: {
       type: sequelize.STRING
     }
   })

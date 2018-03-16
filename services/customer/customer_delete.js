@@ -16,7 +16,7 @@ function deleteCustomerFromDatabase (request, response, Customer) {
       const validationParams = await Joi.validate({ customer_id: request.params.customerId }, schema.customer_delete.requestParams)
       const validationBody = await Joi.validate(request.body, schema.customer_delete.requestBody)
 
-      const deletion = await customerDelete(validationToken.relation_id, request.params.customerId, request.body.surname)
+      const deletion = await customerDelete(validationToken.user_id, request.params.customerId, request.body.surname)
 
       resolve(response
         .status(200)

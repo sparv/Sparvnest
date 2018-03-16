@@ -15,7 +15,7 @@ function getExerciseGroup (request, response) {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_get.requestParams)
 
-      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.user_id)
       const exercises = await exerciseGetAll(request.params.exercisegroupId)
 
       const group = gathering.exercisegroup

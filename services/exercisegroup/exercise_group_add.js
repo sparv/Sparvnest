@@ -18,7 +18,7 @@ function addingExerciseGroupToDatabase (request, response) {
         name: request.body.name,
         description: request.body.description,
         exercises: [],
-        relation_id: validationToken.relation_id
+        user_id: validationToken.user_id
       })
 
       resolve(response

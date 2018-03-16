@@ -24,13 +24,13 @@ function updatingUserData (request, response) {
       if (request.body.meta !== undefined && request.body.security === undefined) {
         const data = request.body.meta
         const validationBody = await Joi.validate(data, schema.user_update.requestBody.meta)
-        const update = await userUpdate(validation.relation_id, data)
+        const update = await userUpdate(validation.user_id, data)
         const information = await userGet(validation.email)
 
         const token = jwt.sign({
           sub: `user_authentication`,
           name: information.user.email,
-          relation_id: information.user.relation_id
+          user_id: information.user.user_id
         }, config.auth.secret)
 
         resolve(response
@@ -59,12 +59,12 @@ function updatingUserData (request, response) {
           throw error
         }
 
-        const update = await userUpdate(validation.relation_id, { password: password.new })
+        const update = await userUpdate(validation.user_id, { password: password.new })
 
         const token = jwt.sign({
           sub: `user_autentication`,
           name: information.user.email,
-          relation_id: information.user.relation_id
+          user_id: information.user.user_id
         }, config.auth.secret)
 
         resolve(response

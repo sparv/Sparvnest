@@ -12,7 +12,7 @@ function exerciseGroupAllGet (request, response) {
   return new Promise(async (resolve, reject) => {
     try {
       const validationToken = await validateAccessToken(request.headers.authorization)
-      const gathering = await exerciseGroupGetAll(validationToken.relation_id)
+      const gathering = await exerciseGroupGetAll(validationToken.user_id)
 
       resolve(response
         .status(200)

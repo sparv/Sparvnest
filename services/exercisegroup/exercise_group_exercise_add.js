@@ -16,7 +16,7 @@ function exerciseGroupExerciseAdd (request, response) {
       const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_exercise_add.requestParams)
       const validationBody = await Joi.validate(request.body, schema.exercise_add.requestBody)
 
-      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
+      const gathering = await exerciseGroupGet(request.params.exercisegroupId, validationToken.user_id)
       const creation = await exerciseAdd(request.params.exercisegroupId, request.body)
 
       resolve(response

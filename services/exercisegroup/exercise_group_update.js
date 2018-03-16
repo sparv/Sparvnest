@@ -15,7 +15,7 @@ function updatingExerciseGroupInDatabase (request, response) {
       const validationParams = await Joi.validate({ exercisegroup_id: request.params.exercisegroupId }, schema.exercise_group_update.requestParams)
       const validationBody = await Joi.validate(request.body, schema.exercise_group_update.requestBody)
 
-      const update = await exerciseGroupUpdate(request.params.exercisegroupId, validationToken.relation_id, request.body)
+      const update = await exerciseGroupUpdate(request.params.exercisegroupId, validationToken.user_id, request.body)
 
       resolve(response
         .status(200)

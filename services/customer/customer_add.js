@@ -15,7 +15,7 @@ function customerValidateAndCreate (request, response) {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationBody = await Joi.validate(request.body, schema.customer_add.requestBody)
 
-      const creation = await customerAdd(validationToken.relation_id, request.body)
+      const creation = await customerAdd(validationToken.user_id, request.body)
 
       resolve(response
         .status(200)

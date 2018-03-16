@@ -3,9 +3,10 @@ const db = require(`../server/initDatabase`)
 
 const User = () => {
     const schema = db.define(`users`, {
-      relation_id: {
+      user_id: {
         type: sequelize.UUID,
-        defaultValue: sequelize.UUIDV4
+        defaultValue: sequelize.UUIDV4,
+        unique: true
       },
       email: {
         type: sequelize.STRING,

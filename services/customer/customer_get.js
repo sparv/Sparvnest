@@ -16,7 +16,7 @@ function getCustomerList (request, response) {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationParams = await Joi.validate({ customer_id: request.params.customerId }, schema.customer_get.requestParams)
 
-      const gathering = await customerGet(validationToken.relation_id, request.params.customerId)
+      const gathering = await customerGet(validationToken.user_id, request.params.customerId)
 
       resolve(response
         .status(200)
