@@ -96,7 +96,7 @@ const schema = {
     }),
     requestBody: Joi.object().keys({
       name: Joi.string().required(),
-      level: Joi.string().required(),
+      level: Joi.string().required().valid(`beginner`, `advanced`, `professional`),
       description: Joi.string().empty('')
     })
   },
@@ -127,7 +127,7 @@ const schema = {
     }),
     requestBody: Joi.object().min(1).keys({
       name: Joi.string().empty(''),
-      level: Joi.string().empty(''),
+      level: Joi.string().empty('').valid(`beginner`, `advanced`, `professional`),
       description: Joi.string().empty('')
     })
   },
