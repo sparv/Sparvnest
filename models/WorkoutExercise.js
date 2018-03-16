@@ -16,6 +16,10 @@ const WorkoutExercise = () => {
       type: sequelize.UUID,
       unique: false
     },
+    user_id: {
+      type: sequelize.UUID,
+      unique: false
+    },
     weight: {
       type: sequelize.FLOAT
     },

@@ -12,6 +12,10 @@ const WorkoutPlan = () => {
       type: sequelize.UUID,
       unique: false
     },
+    user_id: {
+      type: sequelize.UUID,
+      unique: false
+    },
     title: {
       type: sequelize.STRING
     },
