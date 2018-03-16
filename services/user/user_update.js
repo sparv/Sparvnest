@@ -6,6 +6,7 @@ const schema = require(`../validation/requestSchemaValidation`)
 const hashPassword = require(`../../lib/helper/hash_password`)
 const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
+const generateAccessToken = require(`../../lib/authentication/generateAccessToken`)
 
 const userGet = require(`../../lib/user/userGet`)
 const userUpdate = require(`../../lib/user/userUpdate`)
@@ -60,12 +61,7 @@ function updatingUserData (request, response) {
         }
 
         const update = await userUpdate(validation.user_id, { password: password.new })
-
-        const token = jwt.sign({
-          sub: `user_autentication`,
-          name: information.user.email,
-          user_id: information.user.user_id
-        }, config.auth.secret)
+        const token = generateAccessToken(information.user)
 
         resolve(response
           .status(200)
