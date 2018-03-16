@@ -42,7 +42,7 @@ router.get(`/:exercisegroupId/exercises`, (req, res) => {
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.get(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
+router.get(`/exercises/:exerciseId`, (req, res) => {
   exerciseGet(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
@@ -52,12 +52,12 @@ router.post(`/:exercisegroupId/exercises`, (req, res) => {
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.put(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
+router.put(`/exercises/:exerciseId`, (req, res) => {
   exerciseUpdate(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.delete(`/:exercisegroupId/exercises/:exerciseId`, (req, res) => {
+router.delete(`/exercises/:exerciseId`, (req, res) => {
   exerciseDelete(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })

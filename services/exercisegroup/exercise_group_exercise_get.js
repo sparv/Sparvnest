@@ -14,12 +14,10 @@ function getSingleExercisesFromDatabase (request, response) {
     try {
       const validationToken = await validateAccessToken(request.headers.authorization)
       const validationParams = await Joi.validate({
-        exercisegroup_id: request.params.exercisegroupId,
         exercise_id: request.params.exerciseId
       }, schema.exercise_get.requestParams)
 
-      const gatheringGroup = await exerciseGroupGet(request.params.exercisegroupId, validationToken.relation_id)
-      const gathering = await exerciseGet(request.params.exercisegroupId, request.params.exerciseId)
+      const gathering = await exerciseGet(request.params.exerciseId)
 
       resolve(response
         .status(200)
