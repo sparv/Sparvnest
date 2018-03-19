@@ -1,22 +1,18 @@
-const Joi = require(`joi`)
-const schema = require(`../validation/requestSchemaValidation`)
-
 const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 
-const exerciseGroupGetAll = require(`../../lib/exercisegroup/exerciseGroupGetAll`)
+const workoutplanGetAll = require(`../../lib/workoutplan/workoutplanGetAll`)
 
-function exerciseGroupAllGet (request, response) {
+const getAllPlans = (request, response) => {
   return new Promise(async (resolve, reject) => {
     try {
       const validationToken = await validateAccessToken(request.headers.authorization)
-      const gathering = await exerciseGroupGetAll(validationToken.user_id)
+      const gathering = await workoutplanGetAll(validationToken.user_id)
 
       resolve(response
         .status(200)
-        .send({
-          exercise_groups_list: gathering.exercisegroup_list
-        }))
+        .send({ workoutplans: gathering })
+      )
     } catch (error) {
       const mapping = errorMap(error)
 
@@ -28,4 +24,4 @@ function exerciseGroupAllGet (request, response) {
   })
 }
 
-module.exports = exerciseGroupAllGet
+module.exports = getAllPlans

@@ -4,7 +4,8 @@ const routes = (server) => {
     customers: require(`./customers`),
     exercisegroups: require(`./exercisegroups`),
     users: require(`./users`),
-    reset: require(`./reset`)
+    reset: require(`./reset`),
+    workoutplans: require(`./workoutplans`)
   }
 
   Object.keys(endpoints).forEach(endpoint => {

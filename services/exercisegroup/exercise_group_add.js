@@ -3,10 +3,7 @@ const schema = require(`../validation/requestSchemaValidation`)
 
 const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
-
 const exerciseGroupAdd = require(`../../lib/exercisegroup/exerciseGroupAdd`)
-
-const config = require(`../../server/config`)
 
 function addingExerciseGroupToDatabase (request, response) {
   return new Promise(async (resolve, reject) => {
