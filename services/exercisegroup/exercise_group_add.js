@@ -5,35 +5,31 @@ const validateAccessToken = require(`../../lib/authentication/validateAccessToke
 const errorMap = require(`../../lib/helper/errorMap`)
 const exerciseGroupAdd = require(`../../lib/exercisegroup/exerciseGroupAdd`)
 
-function addingExerciseGroupToDatabase (request, response) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const validationToken = await validateAccessToken(request.headers.authorization)
-      const validationBody = await Joi.validate(request.body, schema.exercise_group_add.requestBody)
+const addingExerciseGroupToDatabase = async (request, response) => {
+  try {
+    const validationToken = await validateAccessToken(request.headers.authorization)
+    const validationBody = await Joi.validate(request.body, schema.exercise_group_add.requestBody)
 
-      const creation = await exerciseGroupAdd({
-        name: request.body.name,
-        description: request.body.description,
-        exercises: [],
-        user_id: validationToken.user_id
+    const creation = await exerciseGroupAdd({
+      name: request.body.name,
+      description: request.body.description,
+      exercises: [],
+      user_id: validationToken.user_id
+    })
+
+    return response
+      .status(200)
+      .send({
+        message: creation.message,
+        exercisegroup: creation.exercisegroup
       })
+  } catch (error) {
+    const mapping = errorMap(error)
 
-      resolve(response
-        .status(200)
-        .send({
-          message: creation.message,
-          exercisegroup: creation.exercisegroup
-        })
-      )
-    } catch (error) {
-      const mapping = errorMap(error)
-
-      reject(response
-        .status(mapping.status)
-        .send(mapping)
-      )
-    }
-  })
+    return response
+      .status(mapping.status)
+      .send(mapping)
+  }
 }
 
 module.exports = addingExerciseGroupToDatabase

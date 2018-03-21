@@ -10,31 +10,25 @@ const customerGetAll = require(`../../lib/customer/customerGetAll`)
 
 const config = require(`../../server/config`)
 
-function getCompleteCustomerList (request, response) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const validationToken = await validateAccessToken(request.headers.authorization)
+const getCompleteCustomerList = async (request, response) => {
+  try {
+    const validationToken = await validateAccessToken(request.headers.authorization)
 
-      const gathering = await customerGetAll(validationToken.user_id)
+    const gathering = await customerGetAll(validationToken.user_id)
 
-      resolve(response
-        .status(gathering.status)
-        .send({
-          message: gathering.message,
-          customer_list: gathering.customer_list
-        })
-      )
+    return response
+      .status(gathering.status)
+      .send({
+        message: gathering.message,
+        customer_list: gathering.customer_list
+      })
+  } catch (error) {
+    const mapping = errorMap(error)
 
-    } catch (error) {
-      console.log(error)
-      const mapping = errorMap(error)
-
-      reject(response
-        .status(mapping.status)
-        .send(mapping)
-      )
-    }
-  })
+    return response
+      .status(mapping.status)
+      .send(mapping)
+  }
 }
 
 module.exports = getCompleteCustomerList

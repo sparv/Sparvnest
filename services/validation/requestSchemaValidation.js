@@ -1,16 +1,6 @@
 const Joi = require(`joi`)
 
 const schema = {
-  // User login won't be validated until it got rewritten
-  // user_login: Joi.object().keys({}),
-  user_registration: {
-    requestBody: Joi.object().keys({
-        email: Joi.string().email().required(),
-        password: Joi.string().required(),
-        forename: Joi.string().required(),
-        surname: Joi.string().required()
-      })
-  },
   user_update: {
     requestHeader: Joi.object().keys({
       token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
@@ -26,14 +16,6 @@ const schema = {
         password_new: Joi.string().required()
       })
     }
-  },
-  user_delete: {
-    requestHeader: Joi.object().keys({
-      token: Joi.string().regex(/^Bearer [a-zA-Z0-9._-]+$/).required()
-    }),
-    requestBody: Joi.object().keys({
-      password: Joi.string().required()
-    })
   },
   customer_all_get: {
     requestHeader: Joi.object().keys({

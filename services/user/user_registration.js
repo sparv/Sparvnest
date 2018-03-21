@@ -1,31 +1,30 @@
 const Joi = require(`joi`)
 
-const schema = require(`../validation/requestSchemaValidation`)
-
 const errorMap = require(`../../lib/helper/errorMap`)
-
 const userAdd = require(`../../lib/user/userAdd`)
 
-function userRegistration (response, data) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const validationBody = await Joi.validate(data, schema.user_registration.requestBody)
+const schemaBody = Joi.object().keys({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  forename: Joi.string().required(),
+  surname: Joi.string().required()
+})
 
-      const registration = await userAdd(data)
+const registerUser = async (response, data) => {
+  try {
+    const validationBody = await Joi.validate(data, schemaBody)
+    const registration = await userAdd(data)
 
-      resolve(response
-        .status(200)
-        .send(registration)
-      )
-    } catch (error) {
-      const mapping = errorMap(error)
+    return response
+      .status(200)
+      .send(registration)
+  } catch (error) {
+    const mapping = errorMap(error)
 
-      reject(response
-        .status(mapping.status)
-        .send(mapping)
-      )
-    }
-  })
+    return response
+      .status(mapping.status)
+      .send(mapping)
+  }
 }
 
-module.exports = userRegistration
+module.exports = registerUser 

@@ -12,22 +12,15 @@ const exerciseGet = require(`../services/exercisegroup/exercise_group_exercise_g
 const exerciseUpdate = require(`../services/exercisegroup/exercise_group_exercise_update`)
 const exerciseDelete = require(`../services/exercisegroup/exercise_group_exercise_delete`)
 
-router.get(`/`, (req, res) => {
-  exerciseGroupAllGet(req, res)
-    .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
-})
+router.get(`/`, (req, res) => exerciseGroupAllGet(req, res))
+router.post(`/`, (req, res) => exerciseGroupAdd(req, res))
 
 router.get(`/:exercisegroupId`, (req, res) => {
   exerciseGroupGet(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.post(`/`, (req, res) => {
-  exerciseGroupAdd(req, res)
-    .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
-})
-
-router.put(`/:exercisegroupId`, (req, res) => {
+router.patch(`/:exercisegroupId`, (req, res) => {
   exerciseGroupUpdate(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
@@ -52,7 +45,7 @@ router.post(`/:exercisegroupId/exercises`, (req, res) => {
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
 
-router.put(`/exercises/:exerciseId`, (req, res) => {
+router.patch(`/exercises/:exerciseId`, (req, res) => {
   exerciseUpdate(req, res)
     .catch(error => console.error(`[ERROR]: ${error.statusCode}`))
 })
