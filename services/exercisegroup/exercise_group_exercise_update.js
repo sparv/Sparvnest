@@ -24,7 +24,6 @@ function updatingExerciseInDatabase (request, response) {
         .send({ message: update.message })
       )
     } catch (error) {
-      console.log(error)
       const mapping = errorMap(error)
 
       reject(response
