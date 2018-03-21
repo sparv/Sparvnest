@@ -3,7 +3,7 @@ const crypto = require(`crypto`)
 const getUser = require(`../../lib/user/userGet`)
 const hashPassword = require(`../../lib/helper/hash_password`)
 const generateRefreshToken = require(`../../lib/authentication/generateRefreshToken`)
-const generateAccessToken = require(`../../lib/authentication/generateRefreshToken`)
+const generateAccessToken = require(`../../lib/authentication/generateAccessToken`)
 
 const login = (request, response) => {
   return new Promise(async (resolve, reject) => {
