@@ -6,8 +6,6 @@ const errorMap = require(`../../lib/helper/errorMap`)
 
 const exerciseGroupUpdate = require(`../../lib/exercisegroup/exerciseGroupUpdate`)
 
-const config = require(`../../server/config`)
-
 function updatingExerciseGroupInDatabase (request, response) {
   return new Promise(async (resolve, reject) => {
     try {

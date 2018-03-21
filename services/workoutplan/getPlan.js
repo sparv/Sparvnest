@@ -11,7 +11,7 @@ const getPlan = async (request, response) => {
   try {
     const workoutplanId = request.params.workoutplanId
     const validationToken = await validateAccessToken(request.headers.authorization)
-    const validateRequestParams = Joi.validate(workoutplanId, schemaParams)
+    const validateRequestParams = await Joi.validate(workoutplanId, schemaParams)
 
     const plan = await workoutplanGet(workoutplanId, validationToken.user_id)
     const planExercises = await workoutexerciseGetAll(workoutplanId, validationToken.user_id)

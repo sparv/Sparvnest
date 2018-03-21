@@ -14,7 +14,7 @@ const schemaRequestBody = {
 const addPlan = async (request, response) => {
   try {
     const validationToken = await validateAccessToken(request.headers.authorization)
-    const validationBody = Joi.validate(request.body, schemaRequestBody)
+    const validationBody = await Joi.validate(request.body, schemaRequestBody)
 
     const creation = await workoutplanAdd(request.body)
 
