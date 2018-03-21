@@ -26,7 +26,6 @@ const getPlan = async (request, response) => {
         workoutexercises_list: planExercises 
       }})
   } catch (error) {
-    console.log(error)
     const mapping = errorMap(error)
 
     return response
