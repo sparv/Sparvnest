@@ -28,11 +28,7 @@ function updatingUserData (request, response) {
         const update = await userUpdate(validation.user_id, data)
         const information = await userGet(validation.email)
 
-        const token = jwt.sign({
-          sub: `user_authentication`,
-          name: information.user.email,
-          user_id: information.user.user_id
-        }, config.auth.access_token.secret)
+        const token = generateAccessToken(information.user.user_id)
 
         resolve(response
           .status(200)
