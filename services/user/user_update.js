@@ -32,7 +32,7 @@ function updatingUserData (request, response) {
           sub: `user_authentication`,
           name: information.user.email,
           user_id: information.user.user_id
-        }, config.auth.secret)
+        }, config.auth.access_token.secret)
 
         resolve(response
           .status(200)
