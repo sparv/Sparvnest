@@ -11,7 +11,7 @@ const config = require(`../../server/config`)
 
 const deleteCustomerFromDatabase = async (request, response, Customer) => {
   try {
-    const validationToken = await validateToken(request.headers.authorization)
+    const validationToken = await validateAccessToken(request.headers.authorization)
     const validationParams = await Joi.validate({ customer_id: request.params.customerId }, schema.customer_delete.requestParams)
     const validationBody = await Joi.validate(request.body, schema.customer_delete.requestBody)
 
@@ -21,6 +21,7 @@ const deleteCustomerFromDatabase = async (request, response, Customer) => {
       .status(200)
       .send({ message: deletion.message })
   } catch (error) {
+    console.log(error)
     const mapping = errorMap(error)
 
     return response
