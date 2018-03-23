@@ -3,6 +3,7 @@ const Joi = require(`joi`)
 const validateAccessToken = require(`../../lib/authentication/validateAccessToken`)
 const errorMap = require(`../../lib/helper/errorMap`)
 const workoutexerciseAdd = require(`../../lib/workoutexercise/workoutexerciseAdd`)
+const exerciseGet = require(`../../lib/exercise/exerciseGet`)
 
 const schemaParams = Joi.string().regex(/^[a-zA-Z0-9-]+$/).required()
 const schemaBody = Joi.object().keys({
@@ -19,12 +20,22 @@ const addExerciseToPlan = async (request, response) => {
     const validateBody = await Joi.validate(request.body, schemaBody)
 
     const creation = await workoutexerciseAdd(workoutplanId, validationToken.user_id, request.body)
+    const exercise = await exerciseGet(creation.workoutexercise.exercise_id)
+    console.log(exercise)
 
     return response
       .status(200)
       .send({
         message: creation.message,
-        workoutexercise: creation.workoutexercise
+        workoutexercise: {
+          workoutplan_id: creation.workoutexercise.workoutplan_id,
+          workoutexercise_id: creation.workoutexercise.workoutexercise_id, 
+          name: exercise.exercise.name,
+          level: exercise.exercise.level,
+          description: exercise.exercise.description,
+          weight: creation.workoutexercise.weight,
+          repetition: creation.workoutexercise.repetition
+        }
       })
   } catch (error) {
     const mapping = errorMap(error)
