@@ -38,7 +38,8 @@ const getPlan = async (request, response) => {
         customer_id: plan.customer_id,
         title: plan.title,
         description: plan.description,
-        workoutexercises_list: workoutexercisesList
+        workoutexercises_list: workoutexercisesList,
+        workoutexercise_count: workoutexercisesList.length
       }})
   } catch (error) {
     const mapping = errorMap(error)

@@ -21,7 +21,6 @@ const addExerciseToPlan = async (request, response) => {
 
     const creation = await workoutexerciseAdd(workoutplanId, validationToken.user_id, request.body)
     const exercise = await exerciseGet(creation.workoutexercise.exercise_id)
-    console.log(exercise)
 
     return response
       .status(200)

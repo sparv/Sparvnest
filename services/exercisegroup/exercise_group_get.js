@@ -20,6 +20,7 @@ function getExerciseGroup (request, response) {
 
       const group = gathering.exercisegroup
       group[`exercises`] = exercises.exercise_list
+      group[`exercise_count`] = group.exercises.length
 
       resolve(response
         .status(200)

@@ -11,7 +11,7 @@ server.use(bodyParser.json())
 server.use((req, res, next) => {
   res.append(`Access-Control-Allow-Origin`, [`http://localhost:3000`])
   res.append(`Access-Control-Allow-Headers`, [`Authorization`, `Content-Type`])
-  res.append(`Access-Control-Allow-Methods`, ['GET, POST, PUT, DELETE, OPTIONS'])
+  res.append(`Access-Control-Allow-Methods`, ['GET, POST, PUT, PATCH, DELETE, OPTIONS'])
   res.append(`Access-Control-Allow-Credentials`, true)
   next()
 })
