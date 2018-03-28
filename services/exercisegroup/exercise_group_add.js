@@ -14,7 +14,8 @@ const addingExerciseGroupToDatabase = async (request, response) => {
       name: request.body.name,
       description: request.body.description,
       exercises: [],
-      user_id: validationToken.user_id
+      user_id: validationToken.user_id,
+      color: request.body.color
     })
 
     return response

@@ -18,6 +18,9 @@ const ExerciseGroup = () => {
     },
     user_id: {
       type: sequelize.UUID
+    },
+    color: {
+      type: sequelize.STRING
     }
   })
 

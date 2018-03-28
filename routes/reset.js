@@ -5,7 +5,6 @@ const Users = require(`../models/User`)
 const Customers = require(`../models/Customer`)
 const Exercises = require(`../models/Exercise`)
 const ExerciseGroups = require(`../models/ExerciseGroup`)
-const ExerciseMap = require(`../models/ExerciseMap`)
 const WorkoutPlan = require(`../models/WorkoutPlan`)
 const WorkoutExercise = require(`../models/WorkoutExercise`)
 
