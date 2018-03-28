@@ -11,7 +11,7 @@ const exerciseGroupAllGet = async (request, response) => {
 
     const groupList = await Promise.all(gathering.exercisegroup_list.map(async item => {
       const exerciseList = await exerciseGetAll(item.exercisegroup_id)
-      item[`count`] = exerciseList.exercise_list.length
+      item[`exercise_count`] = exerciseList.exercise_list.length
 
       return item
     }))
