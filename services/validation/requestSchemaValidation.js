@@ -129,7 +129,7 @@ const schema = {
     requestBody: Joi.object().keys({
       name: Joi.string().required(),
       description: Joi.string().empty(''),
-      color: Joi.string().regex(/^#[a-f0-9]{6}$/).required()
+      color: Joi.string().regex(/^#[a-fA-F0-9]{6}$/).required()
     })
   },
   exercise_group_all_get: {
@@ -163,7 +163,7 @@ const schema = {
     requestBody: Joi.object().min(1).keys({
       name: Joi.string().empty(''),
       description: Joi.string().empty(''),
-      color: Joi.string().regex(/^#[a-f0-9]{6}$/)
+      color: Joi.string().regex(/^#[a-fA-F0-9]{6}$/)
     })
   },
   exercise_group_exercise_add: {
